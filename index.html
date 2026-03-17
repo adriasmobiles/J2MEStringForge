@@ -1599,8 +1599,6 @@
             }
             els.editModalOverlay.classList.remove('keyboard-active'); // Pastikan kelas dihapus
             els.editModalOverlay.style.removeProperty('--keyboard-safe-height'); // Hapus variabel CSS
-            const editInput = document.getElementById('edit-input');
-            if (editInput) editInput.dataset.scrolled = ''; // Reset flag gulir
         };
 
         function saveCurrentEdit() {
