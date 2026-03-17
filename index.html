@@ -1505,8 +1505,8 @@
         // Fungsi untuk menangani perubahan ukuran visualViewport (deteksi keyboard virtual)
         function handleEditModalKeyboardResize() {
             const editModalOverlay = document.getElementById('edit-modal-overlay');
-            if (!editModalOverlay || !editModalOverlay.classList.contains('active')) {
-                // Jika modal tidak aktif atau tidak ada, hapus listener visualViewport.resize
+            const editModalContent = editModalOverlay.querySelector('.modal-content'); // Dapatkan elemen konten modal
+            if (!editModalOverlay || !editModalOverlay.classList.contains('active') || !editModalContent) {
                 if (keyboardResizeListenerAdded) {
                     window.visualViewport.removeEventListener('resize', handleEditModalKeyboardResize);
                     keyboardResizeListenerAdded = false;
@@ -1517,30 +1517,27 @@
             const currentViewportHeight = window.visualViewport.height;
             const keyboardThreshold = 150; // Perbedaan piksel minimum untuk menganggap keyboard aktif
 
-            // Jika initialViewportHeight masih 0, atur sekarang (ini terjadi saat modal pertama kali dibuka)
             if (initialViewportHeight === 0) {
-                initialViewportHeight = currentViewportHeight;
+                initialViewportHeight = currentViewportHeight; // Tangkap tinggi awal saat modal pertama dibuka
             }
 
             if (initialViewportHeight - currentViewportHeight > keyboardThreshold) {
                 // Keyboard kemungkinan terbuka
-                editModalOverlay.classList.add('keyboard-active');
-                // Atur variabel CSS --keyboard-safe-height untuk menyesuaikan tinggi modal
-                editModalOverlay.style.setProperty('--keyboard-safe-height', `${currentViewportHeight - 20}px`);
+                editModalOverlay.classList.add('keyboard-active'); // Tambahkan kelas ke overlay
+                // Atur variabel CSS langsung pada elemen konten modal
+                editModalContent.style.setProperty('--keyboard-safe-height', `${currentViewportHeight - 16}px`); // 16px padding dari bawah
                 
-                // Gulir input ke tampilan jika diperlukan, hanya sekali saat keyboard muncul
-                const editInput = document.getElementById('edit-input');
-                if (editInput && !editInput.dataset.scrolled) {
-                    // Gunakan block: 'center' untuk mencoba menempatkan input di tengah area yang terlihat
-                    editInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    editInput.dataset.scrolled = 'true'; // Tandai sebagai sudah digulir untuk mencegah gulir berulang
+                // Gulir tombol navigasi ke tampilan jika diperlukan, hanya sekali saat keyboard muncul
+                const navBar = editModalContent.querySelector('.flex.items-center.gap-2.shrink-0.pt-1'); // Pilih bilah navigasi
+                if (navBar && !editModalOverlay.dataset.keyboardScrollHandled) {
+                    navBar.scrollIntoView({ behavior: 'smooth', block: 'end' }); // Gulir ke akhir untuk memastikan tombol terlihat
+                    editModalOverlay.dataset.keyboardScrollHandled = 'true'; // Tandai sebagai sudah ditangani
                 }
             } else {
                 // Keyboard kemungkinan tertutup
                 editModalOverlay.classList.remove('keyboard-active');
-                editModalOverlay.style.removeProperty('--keyboard-safe-height'); // Hapus variabel CSS
-                const editInput = document.getElementById('edit-input');
-                if (editInput) editInput.dataset.scrolled = ''; // Reset flag gulir
+                editModalContent.style.removeProperty('--keyboard-safe-height'); // Hapus variabel CSS
+                editModalOverlay.dataset.keyboardScrollHandled = ''; // Reset flag gulir
             }
         }
 
