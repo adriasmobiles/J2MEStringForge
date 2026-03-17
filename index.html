@@ -671,21 +671,9 @@
         let parsingMode = 'bin';
         let currentTheme = 'dark';
 
-                const PROMPT_TRANSLATE = `Peran: Editor Lokalisasi Game J2ME (Bahasa Indonesia).
-Aturan Ketat:
-1. Gunakan format output: [#ID] Terjemahan.
-2. JANGAN mengubah ID ([#ID]). Dilarang memberikan penjelasan, dilarang menggabungkan baris.
-3. Pertahankan variabel kode (%s, \n, dll).
-4. Gunakan gaya bahasa natural (aku/kau untuk dialog).
-5. JANGAN terjemahkan istilah teknis/sistem jika tidak perlu.`;
+        const PROMPT_TRANSLATE = "Peran: Editor Lokalisasi Game J2ME (Bahasa Indonesia).\nAturan Ketat:\n1. Gunakan format output: [#ID] Terjemahan.\n2. JANGAN mengubah ID ([#ID]). Dilarang memberikan penjelasan, dilarang menggabungkan baris.\n3. Pertahankan variabel kode (%s, \\n, dll).\n4. Gunakan gaya bahasa natural (aku/kau untuk dialog).\n5. JANGAN terjemahkan istilah teknis/sistem jika tidak perlu.";
 
-        const PROMPT_CORRECT = `Peran: Anda adalah Editor Lokalisasi Game Profesional (Bahasa Indonesia).
-Tugas Utama: Perbaiki ejaan, tata bahasa, dan gaya bahasa dari teks terjemahan agar lebih luwes dan natural.
-
-Panduan:
-1. Pertahankan seluruh simbol/kode sistem (%s, \n, dll).
-2. JANGAN ubah konteks asli.
-3. HANYA berikan hasil koreksinya saja, tanpa penjelasan apapun.`;
+        const PROMPT_CORRECT = "Peran: Anda adalah Editor Lokalisasi Game Profesional (Bahasa Indonesia).\nTugas Utama: Perbaiki ejaan, tata bahasa, dan gaya bahasa dari teks terjemahan agar lebih luwes dan natural.\n\nPanduan:\n1. Pertahankan seluruh simbol/kode sistem (%s, \\n, dll).\n2. JANGAN ubah konteks asli.\n3. HANYA berikan hasil koreksinya saja, tanpa penjelasan apapun.";
 
         const els = {
             uploadSection: document.getElementById('upload-section'),
@@ -834,7 +822,28 @@ Panduan:
 
         function resetApp() { location.reload(); }
 
-        window.onload = loadSettings;
+        let lastBackPressTime = 0;
+        window.onload = () => {
+            loadSettings();
+            
+            // Inisialisasi trap history untuk proteksi tombol kembali (APK/Mobile)
+            history.pushState(null, null, window.location.pathname);
+            
+            window.addEventListener('popstate', function(event) {
+                const now = Date.now();
+                if (now - lastBackPressTime < 2000) {
+                    // Jika ditekan kedua kalinya dalam 2 detik, biarkan keluar
+                    history.back();
+                } else {
+                    // Tekanan pertama: blokir navigasi keluar dan munculkan toast kustom
+                    lastBackPressTime = now;
+                    showToast("Tekan kembali sekali lagi untuk keluar", "info");
+                    
+                    // Kembalikan state history agar tombol back bisa dipicu lagi
+                    history.pushState(null, null, window.location.pathname);
+                }
+            });
+        };
 
         // --- FAB SCROLL BEHAVIOR (Facebook Style) ---
         let lastScrollTop = 0;
@@ -1912,8 +1921,7 @@ Panduan:
             for (let chunk of parsedData.rawStructure) {
                 if (chunk.type === 'text') {
                     let transText = parsedData.translations[chunk.originalIndex] !== undefined ? parsedData.translations[chunk.originalIndex] : chunk.originalText;
-                    // Normalisasi line endings ke LF sebelum encoding biner
-                    transText = transText.replace(/\r\n/g, '\n').replace(/\\n/g, '\n'); 
+                    transText = transText.replace(/\\n/g, '\n'); 
                     
                     let newTextBytes = encoder.encode(transText);
                     let lenHeaderSize = chunk.lengthType || 4;
