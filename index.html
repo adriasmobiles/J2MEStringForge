@@ -1499,7 +1499,52 @@
         function escapeHtml(text) { return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
         // --- EDITING ---
-                function openEdit(listIndex, shouldFocus = true) {
+        let initialViewportHeight = 0; // Menyimpan tinggi viewport awal saat modal dibuka
+        let keyboardResizeListenerAdded = false; // Flag untuk melacak status listener
+
+        // Fungsi untuk menangani perubahan ukuran visualViewport (deteksi keyboard virtual)
+        function handleEditModalKeyboardResize() {
+            const editModalOverlay = document.getElementById('edit-modal-overlay');
+            if (!editModalOverlay || !editModalOverlay.classList.contains('active')) {
+                // Jika modal tidak aktif atau tidak ada, hapus listener visualViewport.resize
+                if (keyboardResizeListenerAdded) {
+                    window.visualViewport.removeEventListener('resize', handleEditModalKeyboardResize);
+                    keyboardResizeListenerAdded = false;
+                }
+                return;
+            }
+
+            const currentViewportHeight = window.visualViewport.height;
+            const keyboardThreshold = 150; // Perbedaan piksel minimum untuk menganggap keyboard aktif
+
+            // Jika initialViewportHeight masih 0, atur sekarang (ini terjadi saat modal pertama kali dibuka)
+            if (initialViewportHeight === 0) {
+                initialViewportHeight = currentViewportHeight;
+            }
+
+            if (initialViewportHeight - currentViewportHeight > keyboardThreshold) {
+                // Keyboard kemungkinan terbuka
+                editModalOverlay.classList.add('keyboard-active');
+                // Atur variabel CSS --keyboard-safe-height untuk menyesuaikan tinggi modal
+                editModalOverlay.style.setProperty('--keyboard-safe-height', `${currentViewportHeight - 20}px`);
+                
+                // Gulir input ke tampilan jika diperlukan, hanya sekali saat keyboard muncul
+                const editInput = document.getElementById('edit-input');
+                if (editInput && !editInput.dataset.scrolled) {
+                    // Gunakan block: 'center' untuk mencoba menempatkan input di tengah area yang terlihat
+                    editInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    editInput.dataset.scrolled = 'true'; // Tandai sebagai sudah digulir untuk mencegah gulir berulang
+                }
+            } else {
+                // Keyboard kemungkinan tertutup
+                editModalOverlay.classList.remove('keyboard-active');
+                editModalOverlay.style.removeProperty('--keyboard-safe-height'); // Hapus variabel CSS
+                const editInput = document.getElementById('edit-input');
+                if (editInput) editInput.dataset.scrolled = ''; // Reset flag gulir
+            }
+        }
+
+        function openEdit(listIndex, shouldFocus = true) {
             currentEditIndex = listIndex;
             const item = parsedData.displayableTexts[listIndex];
             const globalIndex = item.originalIndex;
@@ -1513,7 +1558,22 @@
             
             updateEditCharCount();
             els.editModalOverlay.classList.add('active');
-            if (shouldFocus) setTimeout(() => els.editInput.focus(), 100);
+
+            // --- Logika penanganan keyboard ---
+            initialViewportHeight = window.visualViewport.height; // Tangkap tinggi awal saat modal dibuka
+            if (!keyboardResizeListenerAdded) {
+                window.visualViewport.addEventListener('resize', handleEditModalKeyboardResize);
+                keyboardResizeListenerAdded = true;
+            }
+            // Panggil segera untuk menyesuaikan jika keyboard sudah aktif (misalnya dari input lain)
+            handleEditModalKeyboardResize(); 
+
+            if (shouldFocus) {
+                setTimeout(() => {
+                    els.editInput.focus();
+                    // Listener resize visualViewport akan menangani scrollIntoView jika keyboard terdeteksi
+                }, 100);
+            }
         }
 
         els.editInput.addEventListener('input', updateEditCharCount);
@@ -1531,6 +1591,16 @@
         window.saveAndCloseEdit = function() {
             saveCurrentEdit();
             els.editModalOverlay.classList.remove('active');
+
+            // --- Bersihkan logika penanganan keyboard ---
+            if (keyboardResizeListenerAdded) {
+                window.visualViewport.removeEventListener('resize', handleEditModalKeyboardResize);
+                keyboardResizeListenerAdded = false;
+            }
+            els.editModalOverlay.classList.remove('keyboard-active'); // Pastikan kelas dihapus
+            els.editModalOverlay.style.removeProperty('--keyboard-safe-height'); // Hapus variabel CSS
+            const editInput = document.getElementById('edit-input');
+            if (editInput) editInput.dataset.scrolled = ''; // Reset flag gulir
         };
 
         function saveCurrentEdit() {
