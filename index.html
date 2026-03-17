@@ -1620,7 +1620,7 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: `Terjemahkan teks ini ke Bahasa Indonesia secara natural:\n${sourceText}` }] }],
-                        systemInstruction: { parts: [{ text: "Anda adalah pakar lokalisasi game J2ME. HANYA berikan hasil terjemahan akhir. DILARANG keras menyertakan ID seperti [#ID], dilarang memberikan penjelasan, dan dilarang menyertakan tanda kutip pembungkus." }] },
+                        systemInstruction: { parts: [{ text: "Anda adalah pakar lokalisasi game J2ME (Bahasa Indonesia).\nHanya berikan hasil terjemahan akhir dalam format JSON.\nPertahankan semua nama karakter, tag seperti `[Nama:]` atau `NPC:`, variabel kode (%s, \\n, dll), dan simbol non-terjemahan dari teks asli.\nTerjemahkan hanya bagian dialog secara natural ke Bahasa Indonesia.\nOutput format: `{\"text\": \"Terjemahan Anda\"}`" }] }
                         generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { "text": { type: "STRING" } } } }
                     })
                 });
