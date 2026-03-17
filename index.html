@@ -671,7 +671,7 @@
         let parsingMode = 'bin';
         let currentTheme = 'dark';
 
-        const PROMPT_TRANSLATE = "Peran: Editor Lokalisasi Game J2ME (Bahasa Indonesia).\nAturan Ketat:\n1. Gunakan format output: [#ID] Terjemahan.\n2. JANGAN mengubah ID ([#ID]). Dilarang memberikan penjelasan, dilarang menggabungkan baris.\n3. Pertahankan variabel kode (%s, \\n, dll).\n4. Gunakan gaya bahasa natural (aku/kau untuk dialog).\n5. JANGAN terjemahkan istilah teknis/sistem jika tidak perlu.";
+        const PROMPT_TRANSLATE = "Peran: Editor Lokalisasi Game J2ME (Bahasa Indonesia).\nAturan Ketat:\n1. Gunakan format output: [#ID] Terjemahan.\n2. JANGAN mengubah ID ([#ID]). Dilarang memberikan penjelasan, dilarang menggabungkan baris.\n3. Pertahankan semua nama karakter, tag seperti `[Nama:]` atau `NPC:`, dan variabel kode (%s, \\n, dll) dari teks asli.\n4. Terjemahkan HANYA bagian dialog secara natural ke Bahasa Indonesia.\n5. JANGAN terjemahkan istilah teknis/sistem jika tidak perlu.";
 
         const PROMPT_CORRECT = "Peran: Anda adalah Editor Lokalisasi Game Profesional (Bahasa Indonesia).\nTugas Utama: Perbaiki ejaan, tata bahasa, dan gaya bahasa dari teks terjemahan agar lebih luwes dan natural.\n\nPanduan:\n1. Pertahankan seluruh simbol/kode sistem (%s, \\n, dll).\n2. JANGAN ubah konteks asli.\n3. HANYA berikan hasil koreksinya saja, tanpa penjelasan apapun.";
 
