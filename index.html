@@ -60,9 +60,18 @@
         /* --- SIDEBAR PENGATURAN --- */
         #settings-sidebar {
             position: fixed; top: 0; right: -320px; width: 300px; height: 100%;
-            background-color: var(--bg-card); box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+            background-color: var(--bg-card); box-shadow: -10px 0 35px rgba(0,0,0,0.2);
             z-index: 100; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex; flex-direction: column; border-left: 1px solid var(--border);
+        }
+        #settings-sidebar > div:last-child {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(16, 185, 129, 0.25) transparent;
+        }
+        #settings-sidebar > div:last-child::-webkit-scrollbar { width: 4px; }
+        #settings-sidebar > div:last-child::-webkit-scrollbar-thumb {
+            background-color: rgba(16, 185, 129, 0.25);
+            border-radius: 20px;
         }
         #settings-sidebar.active { right: 0; }
         .sidebar-overlay {
@@ -104,11 +113,39 @@
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         
-        .modal-content {
-            background: var(--bg-card); width: 90%; max-width: 500px; height: 75vh; max-height: 85vh;
-            border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.95); 
-            opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border);
+                .modal-content {
+            background: var(--bg-card);
+            width: 90%;
+            max-width: 500px;
+            height: 75vh;
+            max-height: 85vh;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        
+                .modal-overlay.keyboard-active {
+            align-items: flex-end;
+            padding-bottom: 0;
+        }
+
+        .modal-overlay.keyboard-active .modal-content {
+            height: var(--keyboard-safe-height, 50vh) !important;
+            max-height: 100vh !important;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            transition: height 0.1s ease-out;
+        }
+
+        .modal-overlay.keyboard-active .modal-content > div:nth-child(2) {
+            padding-bottom: 0 !important;
         }
         .modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
 
@@ -180,11 +217,104 @@
         .btn-neutral:hover { opacity: 0.8; }
 
         /* --- UI ELEMENTS --- */
-        .select-box, .input-box {
-            background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border);
-            padding: 10px; border-radius: 10px; width: 100%; font-size: 0.9rem; outline: none; transition: border-color 0.3s;
+                .input-box {
+            background: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
         }
-        .select-box:focus, .input-box:focus { border-color: var(--primary); }
+        .input-box:focus { border-color: var(--primary); }
+
+        
+        .custom-select { position: relative; width: 100%; user-select: none; }
+        .select-trigger {
+            background: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 11px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .select-trigger:after {
+            content: "\f078";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 0.7rem;
+            color: var(--text-sec);
+            transition: transform 0.4s;
+        }
+        .custom-select.active .select-trigger {
+            border-color: var(--primary);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+        .custom-select.active .select-trigger:after { transform: rotate(180deg); color: var(--primary); }
+
+        .select-options {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            background: var(--glass-bg);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.9), 0 18px 36px -18px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.05);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scale(0.96);
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+            max-height: 280px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            backdrop-filter: blur(50px);
+            -webkit-backdrop-filter: blur(50px);
+            outline: 1px solid rgba(255,255,255,0.05);
+        }
+        .custom-select.active .select-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .select-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-sec);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid transparent;
+        }
+        .select-option:hover {
+            background: var(--hover);
+            color: var(--primary);
+            padding-left: 20px;
+        }
+        .select-option.selected {
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.08);
+            border-left-color: var(--primary);
+        }
+        .select-option.selected:after {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-left: auto;
+            font-size: 0.7rem;
+        }
 
         /* --- TOAST --- */
         #toast {
@@ -249,13 +379,13 @@
             <h2 class="font-bold text-lg" style="color: var(--text-main);">Pengaturan</h2>
             <button onclick="toggleSidebar()" class="text-gray-400 hover:text-emerald-500 transition-colors"><i class="fas fa-times text-xl"></i></button>
         </div>
-        <div class="p-5 flex flex-col gap-5 overflow-y-auto">
+        <div class="flex-grow p-5 flex flex-col gap-5 overflow-y-auto pb-10">
             
             <!-- API Key Accordion (Elegant Design) -->
             <div class="group transition-all duration-300">
                 <button onclick="toggleAccordion('api-acc')" class="w-full flex justify-between items-center py-2 px-1 hover:opacity-70 transition-all border-b" style="border-color: var(--border);">
                     <div class="flex items-center gap-2">
-                        <div class="w-1 h-3 bg-blue-500 rounded-full"></div>
+                        <div id="api-status-indicator" class="w-1 h-3 bg-blue-500 rounded-full transition-colors duration-300"></div>
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Kunci Aktivasi</span>
                     </div>
                     <i id="api-acc-icon" class="fas fa-chevron-down text-[10px] text-gray-500 transition-transform duration-300"></i>
@@ -284,14 +414,14 @@
                 <label class="text-[10px] font-extrabold uppercase text-gray-500 mb-2 block">Struktur Target</label>
                 <select id="set-parsing-mode" class="select-box font-bold">
                     <option value="standard"> Pola 2-Byte BE (Standar J2ME)</option>
-                    <option value="bin"> Pola 4-Byte Pointers (Script.bin)</option>
+                    <option value="bin"> Pola 4-Byte (Script.bin)</option>
                     <option value="txt">Pola TXT (Pembatas 0D0A)</option>
                 </select>
             </div>
 
             <!-- Live Prompt Slots -->
             <div class="pt-2 border-t" style="border-color: var(--border);">
-                <label class="block text-[10px] font-extrabold uppercase text-gray-500 mb-2">Live Prompt (Command AI)</label>
+                <label class="block text-[10px] font-extrabold uppercase text-gray-500 mb-2">Live Prompt (Prioritas Tertinggi)</label>
                 <select id="set-prompt-slot" class="select-box font-bold mb-3 text-xs">
                     <option value="none">Tanpa Prompt Khusus</option>
                     <option value="1">Slot 1 (Utama)</option>
@@ -300,7 +430,7 @@
                     <option value="4">Slot 4</option>
                     <option value="5">Slot 5</option>
                 </select>
-                <textarea id="set-live-prompt" rows="4" class="input-box text-xs font-semibold" placeholder="Contoh: Gunakan bahasa gaul Jakarta, jangan kaku..."></textarea>
+                <textarea id="set-live-prompt" rows="4" class="mt-4 input-box text-xs font-semibold" placeholder="Contoh: Gunakan bahasa gaul Jakarta, jangan kaku..."></textarea>
             </div>
             
             <button onclick="saveSettings()" class="w-full mt-2 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-900/20 transition-all active:scale-95 text-sm">
@@ -365,12 +495,12 @@
             </div>
             <h2 class="text-xl font-bold mb-2" style="color: var(--text-main);">Apa yang baru?</h2>
 <p class="text-sm font-semibold mb-6 max-w-xs mx-auto text-left" style="color: var(--text-sec);">
-  <span class="block text-center text-lg font-bold">Versi 1.50</span><br>
-  1. Perbaikan Pola Panjang 4 byte.<br>
-  2. Perbaikan bug muat file dari Folder Penyimpanan.<br>
-  3. Penambahan fitur Live Prompt.<br>
-  4. Penambahan fitur "Ganti" di Pencarian.<br>
-  5. Perbaikan fitur Pilih Banyak di Editor.
+  <span class="block text-center text-lg font-bold">Versi 1.72</span><br>
+  1. Perbaikan estetika visual.<br>
+  2. Perubahan mekanisme Saran AI.<br>
+  3. Perubahan kustom drop down.<br>
+  4. Perbaikan indikator Kunci Aktivasi.<br>
+  5. Perbaikan Editor dan logika keyboard.<br> 
 </p>
             
             <div class="w-full max-w-xs mb-4">
@@ -494,7 +624,7 @@
                     <div class="flex justify-between items-center mb-1">
                         <label class="text-[10px] font-extrabold uppercase tracking-wide opacity-70" style="color: var(--text-sec);">Asli</label>
                         <button onclick="copyOriginalText()" class="text-[10px] text-emerald-500 font-bold px-2 py-0.5 rounded hover:bg-emerald-500/10 transition-colors flex items-center gap-1">
-                            <i class="far fa-copy"></i> SALIN
+                            <i class="far fa-copy"></i> RESET
                         </button>
                     </div>
                     <div class="original-text-wrapper">
@@ -519,12 +649,12 @@
                     </button>
                     
                     <!-- Tombol Tunggal Identik Lite (Short=AI+Correct+Save+Next, Long=Suggest) -->
-                    <button id="btnTranslateSingle" class="flex-grow h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 select-none">
+                    <button id="btnTranslateSingle" onclick="processAiSingleAuto()" class="flex-grow h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 select-none">
                         <div class="flex items-center gap-2 leading-none">
                             <i class="fas fa-bolt text-xs"></i>
                             <span class="text-sm font-bold">Terjemahkan dan Koreksi</span>
                         </div>
-                        <span class="text-[9px] font-medium opacity-75 leading-tight mt-0.5">(Tekan lama: Saran AI)</span>
+                        <span class="text-[9px] font-medium opacity-75 leading-tight mt-0.5">(Geser handle ke atas untuk Saran AI)</span>
                     </button>
                     
                     <button onclick="navEdit(1)" class="w-12 h-11 rounded-xl border flex items-center justify-center transition-all shadow-sm active:scale-95" style="background: var(--bg-input); border-color: var(--border); color: var(--text-sec);">
@@ -532,8 +662,8 @@
                     </button>
                 </div>
 
-                <!-- Swipe Handle (Bottom Close) -->
-                <div id="keyboardCloseHandle" class="mt-1" onclick="saveAndCloseEdit()">
+                <!-- Swipe Handle (Trigger Saran AI) -->
+                <div id="keyboardCloseHandle" class="mt-1 py-4 flex justify-center cursor-pointer select-none">
                     <div class="handle-bar"></div>
                 </div>
             </div>
@@ -635,7 +765,7 @@
     <!-- AI SUGGESTIONS MODAL (BOTTOM SHEET IDENTIK REFERENSI) -->
     <div id="ai-modal" class="fixed inset-x-0 bottom-0 z-[130] rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex flex-col transform translate-y-full transition-transform duration-300 border-t border-[var(--border)] h-[70vh]" 
          style="background-color: var(--bg-card);">
-        <div id="ai-swipe-close" class="w-full py-4 flex justify-center cursor-pointer active:opacity-50 flex-shrink-0" onclick="closeAiModal()">
+        <div id="ai-swipe-close" class="w-full py-4 flex justify-center cursor-pointer select-none active:opacity-50 flex-shrink-0">
             <div class="handle-bar"></div>
         </div>
         <div class="px-6 flex flex-col h-full overflow-hidden">
@@ -695,7 +825,7 @@
         let parsingMode = 'bin';
         let currentTheme = 'dark';
 
-        const PROMPT_TRANSLATE = "Peran: Editor Lokalisasi Game J2ME (Bahasa Indonesia).\nAturan Ketat:\n1. Gunakan format output: [#ID] Terjemahan.\n2. JANGAN mengubah ID ([#ID]). Dilarang memberikan penjelasan, dilarang menggabungkan baris.\n3. Pertahankan semua nama karakter, tag seperti `[Nama:]` atau `NPC:`, dan variabel kode (%s, \\n, dll) dari teks asli.\n4. Terjemahkan HANYA bagian dialog secara natural ke Bahasa Indonesia.\n5. JANGAN terjemahkan istilah teknis/sistem jika tidak perlu. Gunakan kata ganti aku dan kau, jangan kamu, saya atau Anda.";
+        const PROMPT_TRANSLATE = "Peran: Editor Lokalisasi Game J2ME (Bahasa Indonesia).\nAturan Ketat:\n1. Gunakan format output: [#ID] Terjemahan.\n2. JANGAN mengubah ID ([#ID]). Dilarang memberikan penjelasan, dilarang menggabungkan baris.\n3. Pertahankan semua nama karakter, tag seperti `[Nama:]` atau `NPC:`, dan variabel kode (%s, \\n, dll) dari teks asli.\n4. Terjemahkan HANYA bagian dialog secara natural ke Bahasa Indonesia.\n5. JANGAN terjemahkan istilah teknis/sistem jika tidak perlu. Gunakan kata ganti aku dan kau, jangan kamu, saya atau Anda.\n6. Jika teks asli menggunakan HURUF BESAR SEMUA (ALL CAPS), maka hasil terjemahan HARUS menggunakan HURUF BESAR SEMUA juga.";
 
         const PROMPT_CORRECT = "Peran: Anda adalah Editor Lokalisasi Game Profesional (Bahasa Indonesia).\nTugas Utama: Perbaiki ejaan, tata bahasa, dan gaya bahasa dari teks terjemahan agar lebih luwes dan natural.\n\nPanduan:\n1. Pertahankan seluruh simbol/kode sistem (%s, \\n, dll).\n2. JANGAN ubah konteks asli.\n3. HANYA berikan hasil koreksinya saja, tanpa penjelasan apapun.";
 
@@ -742,46 +872,50 @@
             }
         }
 
-        async function validateApiKey() {
+                async function validateApiKey() {
             const key = document.getElementById('set-api-key').value.trim();
             const btn = document.getElementById('btn-validate-api');
-            if (!key) return showToast("Masukkan kunci API!", "error");
+            const ind = document.getElementById('api-status-indicator');
+            const baseClass = "w-full py-2 text-[9px] font-black rounded-lg border transition-all flex items-center justify-center gap-2 uppercase tracking-tighter";
             
-            const origContent = btn.innerHTML;
+            if (!key) {
+                btn.className = `${baseClass} bg-red-600/10 text-red-500 border-red-500/30`;
+                if (ind) ind.className = "w-1 h-3 bg-red-500 rounded-full transition-colors";
+                return showToast("Masukkan kunci API!", "error");
+            }
+            
             btn.innerHTML = `<span class="spinner"></span> Memverifikasi...`;
             btn.disabled = true;
+            btn.className = `${baseClass} bg-blue-600/10 text-blue-500 border-blue-500/30`;
 
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${aiModel}:generateContent?key=${key}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: "Ping" }] }]
-                    })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: "Ping" }] }] })
                 });
 
                 if (response.ok) {
+                    btn.className = `${baseClass} bg-emerald-600/10 text-emerald-500 border-emerald-500/30`;
+                    if (ind) ind.className = "w-1 h-3 bg-emerald-500 rounded-full transition-colors";
                     showToast("Kunci API Valid!", "success");
                     apiKey = key;
                     localStorage.setItem('j2me_sf_apiKey', key);
-                    
-                    // Tutup akordeon secara visual jika valid
-                    const content = document.getElementById('api-acc-content');
-                    const icon = document.getElementById('api-acc-icon');
-                    content.classList.add('hidden');
-                    icon.style.transform = 'rotate(0deg)';
+                    setTimeout(() => {
+                        const content = document.getElementById('api-acc-content');
+                        const icon = document.getElementById('api-acc-icon');
+                        if(content) { content.classList.add('hidden'); icon.style.transform = 'rotate(0deg)'; }
+                    }, 800);
                 } else {
-                    let errorMsg = "Kunci tidak valid atau kuota habis";
-                    try {
-                        const errData = await response.json();
-                        errorMsg = errData.error?.message || errorMsg;
-                    } catch(e) {  }
-                    throw new Error(errorMsg);
+                    const isQuota = response.status === 429;
+                    btn.className = isQuota ? `${baseClass} bg-amber-600/10 text-amber-500 border-amber-500/30` : `${baseClass} bg-red-600/10 text-red-500 border-red-500/30`;
+                    if (ind) ind.className = isQuota ? "w-1 h-3 bg-amber-500 rounded-full transition-colors" : "w-1 h-3 bg-red-500 rounded-full transition-colors";
+                    throw new Error(isQuota ? "Kuota API Habis!" : "Kunci Tidak Valid!");
                 }
             } catch (err) {
                 showToast(err.message, "error");
             } finally {
-                btn.innerHTML = origContent;
+                btn.innerHTML = `<i class="fas fa-shield-alt"></i> Verifikasi Kunci`;
                 btn.disabled = false;
             }
         }
@@ -859,7 +993,7 @@
             applyTheme(currentTheme);
         }
 
-        function applyTheme(theme) {
+                function applyTheme(theme) {
             if (theme === 'light') {
                 document.body.classList.add('light-theme');
                 els.themeIcon.className = 'fas fa-sun';
@@ -869,13 +1003,73 @@
             }
         }
 
+        function initCustomSelect(selectId) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            
+            select.style.display = 'none';
+            const existing = document.getElementById('custom-' + selectId);
+            if (existing) existing.remove();
+
+            const container = document.createElement('div');
+            container.className = 'custom-select';
+            container.id = 'custom-' + selectId;
+            
+            const trigger = document.createElement('div');
+            trigger.className = 'select-trigger';
+            
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'select-options';
+            
+            container.appendChild(trigger);
+            container.appendChild(optionsContainer);
+            select.parentNode.insertBefore(container, select.nextSibling);
+
+            const updateUI = () => {
+                const selectedText = select.options[select.selectedIndex]?.text || '';
+                trigger.innerText = selectedText;
+                
+                optionsContainer.innerHTML = '';
+                Array.from(select.options).forEach((opt, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'select-option' + (select.selectedIndex === idx ? ' selected' : '');
+                    div.innerText = opt.text;
+                    div.onclick = (e) => {
+                        e.stopPropagation();
+                        select.selectedIndex = idx;
+                        select.dispatchEvent(new Event('change'));
+                        container.classList.remove('active');
+                        updateUI();
+                    };
+                    optionsContainer.appendChild(div);
+                });
+            };
+
+            trigger.onclick = (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.custom-select').forEach(s => s !== container && s.classList.remove('active'));
+                container.classList.toggle('active');
+            };
+
+            select.addEventListener('change', updateUI);
+            updateUI();
+        }
+
 
 
         function resetApp() { location.reload(); }
 
         let lastBackPressTime = 0;
-        window.onload = () => {
+                window.onload = () => {
             loadSettings();
+            
+            // Inisialisasi Custom Dropdowns
+            ['initial-encoding-select', 'set-ai-model', 'set-parsing-mode', 'set-prompt-slot'].forEach(id => initCustomSelect(id));
+            
+            // Global Click to close dropdowns
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.custom-select').forEach(s => s.classList.remove('active'));
+            });
             
             // Inisialisasi trap history untuk proteksi tombol kembali (APK/Mobile)
             history.pushState(null, null, window.location.pathname);
@@ -1654,11 +1848,11 @@
         let initialViewportHeight = 0; // Menyimpan tinggi viewport awal saat modal dibuka
         let keyboardResizeListenerAdded = false; // Flag untuk melacak status listener
 
-        // Fungsi untuk menangani perubahan ukuran visualViewport (deteksi keyboard virtual)
-        function handleEditModalKeyboardResize() {
+                function handleEditModalKeyboardResize() {
             const editModalOverlay = document.getElementById('edit-modal-overlay');
-            const editModalContent = editModalOverlay.querySelector('.modal-content'); // Dapatkan elemen konten modal
-            if (!editModalOverlay || !editModalOverlay.classList.contains('active') || !editModalContent) {
+            const editModalContent = editModalOverlay?.querySelector('.modal-content');
+
+            if (!editModalOverlay?.classList.contains('active') || !editModalContent) {
                 if (keyboardResizeListenerAdded) {
                     window.visualViewport.removeEventListener('resize', handleEditModalKeyboardResize);
                     keyboardResizeListenerAdded = false;
@@ -1666,34 +1860,26 @@
                 return;
             }
 
-            const currentViewportHeight = window.visualViewport.height;
-            const keyboardThreshold = 150; // Perbedaan piksel minimum untuk menganggap keyboard aktif
+            const currentVVH = window.visualViewport.height;
+            const layoutH = window.innerHeight;
+            const isKeyboardUp = (layoutH - currentVVH) > 150;
 
-            if (initialViewportHeight === 0) {
-                initialViewportHeight = currentViewportHeight; // Tangkap tinggi awal saat modal pertama dibuka
-            }
-
-            if (initialViewportHeight - currentViewportHeight > keyboardThreshold) {
-                // Keyboard kemungkinan terbuka
-                editModalOverlay.classList.add('keyboard-active'); // Tambahkan kelas ke overlay
-                // Atur variabel CSS langsung pada elemen konten modal
-                editModalContent.style.setProperty('--keyboard-safe-height', `${currentViewportHeight - 16}px`); // 16px padding dari bawah
-                
-                // Gulir tombol navigasi ke tampilan jika diperlukan, hanya sekali saat keyboard muncul
-                const navBar = editModalContent.querySelector('.flex.items-center.gap-2.shrink-0.pt-1'); // Pilih bilah navigasi
-                if (navBar && !editModalOverlay.dataset.keyboardScrollHandled) {
-                    navBar.scrollIntoView({ behavior: 'smooth', block: 'end' }); // Gulir ke akhir untuk memastikan tombol terlihat
-                    editModalOverlay.dataset.keyboardScrollHandled = 'true'; // Tandai sebagai sudah ditangani
+            if (isKeyboardUp) {
+                editModalOverlay.classList.add('keyboard-active');
+                editModalContent.style.setProperty('--keyboard-safe-height', `${currentVVH}px`);
+                const swipeHandle = document.getElementById('keyboardCloseHandle');
+                if (swipeHandle && !editModalOverlay.dataset.keyboardScrollHandled) {
+                    swipeHandle.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    editModalOverlay.dataset.keyboardScrollHandled = 'true';
                 }
             } else {
-                // Keyboard kemungkinan tertutup
                 editModalOverlay.classList.remove('keyboard-active');
-                editModalContent.style.removeProperty('--keyboard-safe-height'); // Hapus variabel CSS
-                editModalOverlay.dataset.keyboardScrollHandled = ''; // Reset flag gulir
+                editModalContent.style.removeProperty('--keyboard-safe-height');
+                editModalOverlay.dataset.keyboardScrollHandled = '';
             }
         }
 
-        function openEdit(listIndex, shouldFocus = true) {
+        function openEdit(listIndex, shouldFocus = false) {
             currentEditIndex = listIndex;
             const item = parsedData.displayableTexts[listIndex];
             const globalIndex = item.originalIndex;
@@ -1708,14 +1894,12 @@
             updateEditCharCount();
             els.editModalOverlay.classList.add('active');
 
-            // --- Logika penanganan keyboard ---
-            initialViewportHeight = window.visualViewport.height; // Tangkap tinggi awal saat modal dibuka
+                        // --- Logika penanganan keyboard ---
             if (!keyboardResizeListenerAdded) {
                 window.visualViewport.addEventListener('resize', handleEditModalKeyboardResize);
                 keyboardResizeListenerAdded = true;
             }
-            // Panggil segera untuk menyesuaikan jika keyboard sudah aktif (misalnya dari input lain)
-            handleEditModalKeyboardResize(); 
+            handleEditModalKeyboardResize();
 
             if (shouldFocus) {
                 setTimeout(() => {
@@ -1734,7 +1918,7 @@
             const text = document.getElementById('edit-orig').textContent;
             els.editInput.value = text;
             updateEditCharCount();
-            showToast('Teks asli disalin ke input', 'success');
+            showToast('Teks telah direset ke asli', 'success');
         };
 
         window.saveAndCloseEdit = function() {
@@ -1785,39 +1969,48 @@
             }
         };
 
-        // --- AI TRANSLATE & SARAN (MEKANISME IDENTIK REFERENSI) ---
+        // --- AI TRANSLATE & SARAN (MEKANISME SWIPE HANDLE) ---
         let isAiLocked = false;
-        let aiLongPressTimer;
-        let isAiLongPress = false;
-
         const btnSingle = document.getElementById('btnTranslateSingle');
+        let swipeStartY = 0;
 
-        btnSingle.addEventListener('mousedown', () => {
-            isAiLongPress = false;
-            aiLongPressTimer = setTimeout(() => {
-                isAiLongPress = true;
-                if (navigator.vibrate) navigator.vibrate(50);
+        // Listener Swipe Up pada Handle Editor (Touch & Mouse)
+        const editHandle = document.getElementById('keyboardCloseHandle');
+        editHandle.addEventListener('touchstart', e => { swipeStartY = e.touches[0].clientY; }, {passive: true});
+        editHandle.addEventListener('touchend', e => {
+            const swipeEndY = e.changedTouches[0].clientY;
+            if (swipeStartY - swipeEndY > 40) {
+                if (navigator.vibrate) navigator.vibrate(30);
                 triggerAiSuggestions();
-            }, 600);
-        });
-
-        btnSingle.addEventListener('mouseup', () => {
-            clearTimeout(aiLongPressTimer);
-            if (!isAiLongPress) processAiSingleAuto();
-        });
-
-        btnSingle.addEventListener('touchstart', (e) => {
-            isAiLongPress = false;
-            aiLongPressTimer = setTimeout(() => {
-                isAiLongPress = true;
-                if (navigator.vibrate) navigator.vibrate(50);
-                triggerAiSuggestions();
-            }, 600);
+            }
         }, {passive: true});
 
-        btnSingle.addEventListener('touchend', (e) => {
-            clearTimeout(aiLongPressTimer);
-            if (!isAiLongPress) processAiSingleAuto();
+        editHandle.addEventListener('mousedown', e => {
+            e.preventDefault();
+            swipeStartY = e.clientY;
+            const onMouseUp = (ev) => {
+                if (swipeStartY - ev.clientY > 40) triggerAiSuggestions();
+                window.removeEventListener('mouseup', onMouseUp);
+            };
+            window.addEventListener('mouseup', onMouseUp, { once: true });
+        });
+
+        // Listener Swipe Down pada Handle Saran AI (Touch & Mouse)
+        const aiHandle = document.getElementById('ai-swipe-close');
+        aiHandle.addEventListener('touchstart', e => { swipeStartY = e.touches[0].clientY; }, {passive: true});
+        aiHandle.addEventListener('touchend', e => {
+            const swipeEndY = e.changedTouches[0].clientY;
+            if (swipeEndY - swipeStartY > 40) closeAiModal();
+        }, {passive: true});
+
+        aiHandle.addEventListener('mousedown', e => {
+            e.preventDefault();
+            swipeStartY = e.clientY;
+            const onMouseUp = (ev) => {
+                if (ev.clientY - swipeStartY > 40) closeAiModal();
+                window.removeEventListener('mouseup', onMouseUp);
+            };
+            window.addEventListener('mouseup', onMouseUp, { once: true });
         });
 
         // Mode 1: Terjemahkan + Koreksi + Simpan + Next (Klik Sekali)
@@ -1833,7 +2026,7 @@
             try {
                 const sourceText = document.getElementById('edit-orig').textContent;
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${aiModel}:generateContent?key=${apiKey}`;
-                let sysInst = "Anda adalah pakar lokalisasi game J2ME (Bahasa Indonesia).\nHanya berikan hasil terjemahan akhir dalam format JSON.\nPertahankan semua nama karakter, tag seperti `[Nama:]` atau `NPC:`, variabel kode (%s, \\n, dll), dan simbol non-terjemahan dari teks asli.\nTerjemahkan hanya bagian dialog secara natural ke Bahasa Indonesia.\nOutput format: `{\"text\": \"Terjemahan Anda\"}`";
+                let sysInst = "Anda adalah pakar lokalisasi game J2ME (Bahasa Indonesia).\nHanya berikan hasil terjemahan akhir dalam format JSON.\nPertahankan semua nama karakter, tag seperti `[Nama:]` atau `NPC:`, variabel kode (%s, \\n, dll), dan simbol non-terjemahan dari teks asli.\nTerjemahkan hanya bagian dialog secara natural ke Bahasa Indonesia. Jika teks asli menggunakan HURUF BESAR SEMUA (ALL CAPS), hasil terjemahan WAJIB menggunakan HURUF BESAR SEMUA.\nOutput format: `{\"text\": \"Terjemahan Anda\"}`";
                 const livePrompt = getActiveLivePrompt();
                 if (livePrompt) sysInst += "\n\nPERINTAH TERTINGGI (WAJIB DIIKUTI): " + livePrompt;
 
@@ -1887,7 +2080,7 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: sourceText }] }],
-                        systemInstruction: { parts: [{ text: PROMPT_TRANSLATE + "\nOutput: JSON Array String (5 variasi terjemahan berbeda). PENTING: JANGAN sertakan tag [#ID] di awal teks, berikan teks terjemahannya saja." }] },
+                        systemInstruction: { parts: [{ text: PROMPT_TRANSLATE + "\nOutput: JSON Array String (5 variasi terjemahan berbeda). PENTING: JANGAN sertakan tag [#ID] di awal teks, berikan teks terjemahannya saja. Jika teks asli menggunakan HURUF BESAR SEMUA (ALL CAPS), maka ke-5 variasi saran terjemahan HARUS menggunakan HURUF BESAR SEMUA." }] },
                         generationConfig: { responseMimeType: "application/json", responseSchema: { type: "ARRAY", items: { type: "STRING" } } }
                     })
                 });
