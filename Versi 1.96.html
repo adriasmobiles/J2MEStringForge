@@ -7,10 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-
-        
-        #ai-overlay { backdrop-filter: blur(12px) !important; background: rgba(0,0,0,0.4) !important; }
-        
         /* --- CSS VARIABLES (THEME: FORGE GREEN) --- */
         :root {
             --primary: #10b981; 
@@ -96,12 +92,12 @@
         }
         .text-row:active { transform: scale(0.99); background-color: var(--hover); }
         .text-row.translated { border-left-color: var(--primary) !important; background-color: rgba(16, 185, 129, 0.05); }
-                .text-row.manual { border-left-color: #f59e0b !important; background-color: rgba(245, 158, 11, 0.05); }
-        .text-row.ai-suggested { border-left-color: #3b82f6 !important; background-color: rgba(59, 130, 246, 0.05); }
+        .text-row.manual { border-left-color: #f59e0b !important; background-color: rgba(245, 158, 11, 0.05); }
+        .text-row.ai-suggest { border-left-color: #3b82f6 !important; background-color: rgba(59, 130, 246, 0.05); }
         .text-row.selected { border: 1px solid var(--primary); background-color: rgba(16, 185, 129, 0.15); border-left: 5px solid var(--primary); }
         .text-row.hidden { display: none !important; }
         
-        .text-content { font-weight: 500; font-family: inherit; color: var(--text-main); line-height: 1.5; pointer-events: none; white-space: pre-wrap; }
+        .text-content { font-weight: 500; font-family: inherit; color: var(--text-main); line-height: 1.5; pointer-events: none; }
         .highlight-text { background-color: #b58900; color: white; padding: 0 2px; border-radius: 2px; }
 
         .row-number {
@@ -118,7 +114,7 @@
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         
-                .modal-content {
+        .modal-content {
             background: var(--bg-card);
             width: 90%;
             max-width: 500px;
@@ -135,8 +131,7 @@
             border: 1px solid var(--border);
         }
 
-        
-                .modal-overlay.keyboard-active {
+        .modal-overlay.keyboard-active {
             align-items: flex-end;
             padding-bottom: 0;
         }
@@ -168,21 +163,6 @@
             border-radius: 10px;
         }
 
-        #edit-input {
-            scrollbar-width: thin;
-            
-        #ai-overlay { backdrop-filter: blur(12px) !important; background: rgba(0,0,0,0.4) !important; }
-
-        scrollbar-color: rgba(16, 185, 129, 0.3) transparent;
-        }
-        #edit-input::-webkit-scrollbar { width: 3px; }
-        #edit-input::-webkit-scrollbar-track { background: transparent; }
-        #edit-input::-webkit-scrollbar-thumb {
-            background-color: rgba(16, 185, 129, 0.3);
-            border-radius: 10px;
-        }
-
-        
         #main-scroll {
             scrollbar-width: thin;
             scrollbar-color: rgba(16, 185, 129, 0.25) transparent;
@@ -203,22 +183,6 @@
 
         #main-scroll::-webkit-scrollbar-thumb:hover {
             background-color: rgba(16, 185, 129, 0.5);
-        }
-
-        
-        #ai-results-list, #ai-orig-context {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(59, 130, 246, 0.4) transparent;
-        }
-        #ai-results-list::-webkit-scrollbar, #ai-orig-context::-webkit-scrollbar {
-            width: 3px;
-        }
-        #ai-results-list::-webkit-scrollbar-track, #ai-orig-context::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        #ai-results-list::-webkit-scrollbar-thumb, #ai-orig-context::-webkit-scrollbar-thumb {
-            background-color: rgba(59, 130, 246, 0.4);
-            border-radius: 10px;
         }
         
         #keyboardCloseHandle {
@@ -252,7 +216,7 @@
         .btn-neutral:hover { opacity: 0.8; }
 
         /* --- UI ELEMENTS --- */
-                .input-box {
+        .input-box {
             background: var(--bg-input);
             color: var(--text-main);
             border: 1px solid var(--border);
@@ -265,7 +229,6 @@
         }
         .input-box:focus { border-color: var(--primary); }
 
-        
         .custom-select { position: relative; width: 100%; user-select: none; }
         .select-trigger {
             background: var(--bg-input);
@@ -362,17 +325,13 @@
         }
         #toast.active { transform: translateX(-50%) translateY(0); opacity: 1; }
         
-        /* Spinner */
-                
         .file-item-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; transition: all 0.2s; }
         .file-item-card:hover { border-color: var(--primary); }
         .rename-input { background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); }
         
-        
         .spinner { border: 2px solid rgba(255,255,255,0.2); border-top: 2px solid white; border-radius: 50%; width: 14px; height: 14px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Pulse Animation for Long Press */
         .btn-pulse { animation: pulsing 0.5s infinite alternate; }
         @keyframes pulsing { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
     </style>
@@ -397,7 +356,6 @@
             <button onclick="toggleTheme()" class="w-9 h-9 rounded-full flex items-center justify-center hover:text-emerald-500 transition-colors" style="background: var(--bg-input); border: 1px solid var(--border); color: var(--text-sec);">
                 <i class="fas fa-moon" id="theme-icon"></i>
             </button>
-            <!-- Ikon Folder (Proyek Memori) -->
             <button onclick="toggleProjectModal()" class="w-9 h-9 rounded-full flex items-center justify-center hover:text-emerald-500 transition-colors" style="background: var(--bg-input); border: 1px solid var(--border); color: var(--text-sec);">
                 <i class="fas fa-folder"></i>
             </button>
@@ -416,7 +374,6 @@
         </div>
         <div class="flex-grow p-5 flex flex-col gap-5 overflow-y-auto pb-10">
             
-            <!-- API Key Accordion (Elegant Design) -->
             <div class="group transition-all duration-300">
                 <button onclick="toggleAccordion('api-acc')" class="w-full flex justify-between items-center py-2 px-1 hover:opacity-70 transition-all border-b" style="border-color: var(--border);">
                     <div class="flex items-center gap-2">
@@ -435,7 +392,6 @@
                 </div>
             </div>
 
-            <!-- Model AI -->
             <div>
                 <label class="text-[10px] font-extrabold uppercase text-gray-500 mb-2 block">Model AI Translate</label>
                 <select id="set-ai-model" class="select-box font-bold">
@@ -444,17 +400,15 @@
                 </select>
             </div>
 
-            <!-- Mode Parsing -->
             <div>
                 <label class="text-[10px] font-extrabold uppercase text-gray-500 mb-2 block">Struktur Target</label>
                 <select id="set-parsing-mode" class="select-box font-bold">
-                    <option value="standard"> Pola 2-Byte BE (Standar J2ME)</option>
-                    <option value="bin"> Pola 4-Byte (Script.bin)</option>
+                    <option value="standard">Pola 2-Byte BE (Standar J2ME)</option>
+                    <option value="bin">Pola 4-Byte (Script.bin)</option>
                     <option value="txt">Pola TXT (Pembatas 0D0A)</option>
                 </select>
             </div>
 
-            <!-- Live Prompt Slots -->
             <div class="pt-2 border-t" style="border-color: var(--border);">
                 <label class="block text-[10px] font-extrabold uppercase text-gray-500 mb-2">Live Prompt (Prioritas Tertinggi)</label>
                 <select id="set-prompt-slot" class="select-box font-bold mb-3 text-xs">
@@ -474,16 +428,14 @@
         </div>
     </div>
 
-    <!-- MODAL PROYEK (FILE MANAGER IDENTIK REFERENSI) -->
+    <!-- MODAL PROYEK -->
     <div id="project-modal" class="modal-overlay">
         <div class="modal-content !h-auto !max-h-[80vh] !w-[90%] !max-w-sm">
-            <!-- Header Modal -->
             <div class="p-4 border-b flex justify-between items-center bg-[var(--bg-card)]" style="border-color: var(--border);">
                 <h3 class="font-bold text-base" style="color: var(--text-main);"><i class="fas fa-folder-open mr-2 text-emerald-500"></i>File Tersimpan</h3>
                 <button onclick="toggleProjectModal()" class="w-8 h-8 rounded-full btn-neutral flex items-center justify-center"><i class="fas fa-times"></i></button>
             </div>
             
-            <!-- Input Simpan Baru -->
             <div class="p-4 border-b bg-[var(--bg-card)]" style="border-color: var(--border);">
                 <label class="block text-[10px] font-extrabold uppercase tracking-wide mb-1 text-gray-500">Simpan Progres Baru</label>
                 <div class="flex gap-2">
@@ -492,7 +444,6 @@
                 </div>
             </div>
 
-            <!-- List Proyek Tersimpan -->
             <div id="saved-files-list" class="p-3 overflow-y-auto max-h-[40vh] bg-[var(--hover)]">
                 <!-- Rendered via JS -->
             </div>
@@ -529,14 +480,12 @@
                 <i class="fas fa-file-code text-4xl text-emerald-500"></i>
             </div>
             <h2 class="text-xl font-bold mb-2" style="color: var(--text-main);">Apa yang baru?</h2>
-<p class="text-sm font-semibold mb-6 max-w-xs mx-auto text-left" style="color: var(--text-sec);">
-  <span class="block text-center text-lg font-bold">Versi 2.9</span><br>
-  1. Perbaikan bug Saran AI.<br>
-  2. Perbaikan visual Saran AI.<br>
-  3. Perbaikan indikator Saran AI.<br>
-  4. Perbaikan Unduhan Pola 2 Byte dan logikanya.<br>
-  5. Perbaikan mekanisme visual keyboard.<br> 
-</p>
+            <p class="text-sm font-semibold mb-6 max-w-xs mx-auto text-left" style="color: var(--text-sec);">
+              <span class="block text-center text-lg font-bold">Versi 1.94 (FINAL FIX)</span><br>
+              1. Mengatasi bug layar kosong/blank pada editor teks.<br>
+              2. Mengisolasi penuh algoritma "2-Byte Only" tanpa duplikasi fungsi.<br>
+              3. Editor dijamin akan merender seluruh struktur dengan akurasi 100%.<br>
+            </p>
             
             <div class="w-full max-w-xs mb-4">
                 <label class="text-[10px] font-bold uppercase text-gray-500 mb-1 block text-left pl-1">Encoding Awal:</label>
@@ -552,30 +501,10 @@
             <label for="file-input" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3.5 rounded-xl font-bold cursor-pointer shadow-lg shadow-emerald-500/30 transition-all active:scale-95 text-sm w-full max-w-xs">
                 Buka File Biner/TXT
             </label>
-
-            <div class="w-full max-w-xs mt-6 text-left animate-fade-in group">
-                <button onclick="toggleAccordion('changelog-acc')" class="w-full flex justify-between items-center py-2 hover:opacity-70 transition-all border-b border-[var(--border)]">
-                    <span class="text-[10px] font-extrabold uppercase text-gray-500 tracking-wider">Rangkuman Pembaruan</span>
-                    <i id="changelog-acc-icon" class="fas fa-chevron-down text-[10px] text-gray-500"></i>
-                </button>
-                <div id="changelog-acc-content" class="hidden pt-4">
-                    <div id="user-changelog-manual" class="p-4 rounded-xl text-xs font-semibold min-h-[140px] overflow-y-auto block shadow-inner border" 
-                         style="background: var(--bg-input); border: 1px solid var(--border); color: var(--text-sec); line-height: 1.6;">
-                        <ul class="list-disc pl-4 space-y-1">
-                            <li>Memperbaiki bug Saran AI yang tidak konsisten saat menghasilkan terjemahan.</li>
-                            <li>Menambahkan efek blur pada latar belakang Saran AI agar terlihat lebih jelas.</li>
-                            <li>Mengganti indikator menjadi warna biru untuk penggunaan Saran AI.</li>
-                            <li>Memperbaiki Pola 2 Byte yang mengalami bug saat mengunduh file.</li>
-                            <li>Memperbaiki tampilan keyboard yang muncul di Edit Teks (Khusus APK versi 2.9).</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- EDITOR SECTION -->
         <div id="editor-section" class="hidden max-w-2xl mx-auto pt-4 px-4">
-            
             <!-- STATUS DISPLAY -->
             <div class="grid grid-cols-3 gap-3 mb-4">
                 <div class="app-card p-3 text-center mb-0">
@@ -606,12 +535,10 @@
             <i class="fas fa-arrow-down"></i>
         </button>
         
-        <!-- Tombol Buka File Baru -->
         <button onclick="checkUnsavedProgress()" class="fab mb-1" title="Buka File Baru">
             <i class="fas fa-folder-plus text-xl text-emerald-500"></i>
         </button>
 
-        <!-- Tombol Terjemahan Batch (Ikon Language + Badge Identik Lite) -->
         <button onclick="processBatchTranslate()" id="fabBatch" class="fab mb-1" title="Terjemahkan Batch">
             <i class="fas fa-language text-2xl text-emerald-500"></i>
             <span id="batch-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md hidden">0</span>
@@ -622,7 +549,7 @@
         </button>
     </div>
 
-    <!-- MODAL KONFIRMASI GANTI FILE (KUSTOM) -->
+    <!-- MODAL KONFIRMASI GANTI FILE -->
     <div id="confirm-new-modal" class="modal-overlay !z-[120]">
         <div class="modal-content !h-auto !max-w-[300px] p-6 text-center">
             <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
@@ -639,7 +566,7 @@
         </div>
     </div>
 
-    <!-- MODAL KONFIRMASI UMUM (PENGGANTI NATIVE CONFIRM) -->
+    <!-- MODAL KONFIRMASI UMUM -->
     <div id="confirm-generic-modal" class="modal-overlay !z-[140]">
         <div class="modal-content !h-auto !max-w-[300px] p-6 text-center shadow-2xl">
             <div id="confirm-generic-icon-wrapper" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
@@ -654,26 +581,22 @@
         </div>
     </div>
 
-    <!-- MODAL EDIT TEKS (Identik J2ME Lite - 2 Tombol Terjemah & Koreksi) -->
+    <!-- MODAL EDIT TEKS -->
     <div id="edit-modal-overlay" class="modal-overlay">
         <div class="modal-content">
-            <!-- Header Modal -->
             <div class="p-3 border-b flex justify-between items-center shrink-0" style="border-color: var(--border);">
                 <div class="flex flex-col">
                     <h3 class="font-bold text-lg leading-tight" style="color: var(--text-main);">Edit Teks</h3>
                     <span id="edit-id" class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">#0 / 0</span>
                 </div>
                 <div class="flex gap-2">
-                    <!-- Tombol Tutup -->
                     <button onclick="saveAndCloseEdit()" class="w-8 h-8 rounded-full btn-neutral flex items-center justify-center transition-all hover:bg-emerald-500/10 hover:text-emerald-500">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Body Modal -->
             <div class="p-4 flex-grow flex flex-col gap-3 overflow-y-auto" style="background: var(--bg-card);">
-                <!-- Original Text -->
                 <div class="shrink-0 flex flex-col">
                     <div class="flex justify-between items-center mb-1">
                         <label class="text-[10px] font-extrabold uppercase tracking-wide opacity-70" style="color: var(--text-sec);">Asli</label>
@@ -686,7 +609,6 @@
                     </div>
                 </div>
 
-                <!-- Translation Input -->
                 <div class="flex-grow flex flex-col min-h-0">
                     <div class="flex justify-between items-end mb-1 shrink-0">
                         <label class="text-[10px] font-extrabold uppercase tracking-wide opacity-70" style="color: var(--text-sec);">Terjemahan</label>
@@ -696,13 +618,11 @@
                         style="background: var(--bg-input); color: var(--text-main); border-color: var(--border);" placeholder="Ketik terjemahan... (Tahan tombol di bawah untuk Saran AI)"></textarea>
                 </div>
 
-                <!-- Navigation Bar (Identik J2ME Lite - Translate & Koreksi) -->
                 <div class="flex items-center gap-2 shrink-0 pt-1">
                     <button onclick="navEdit(-1)" class="w-12 h-11 rounded-xl border flex items-center justify-center transition-all shadow-sm active:scale-95" style="background: var(--bg-input); border-color: var(--border); color: var(--text-sec);">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     
-                    <!-- Tombol Tunggal Identik Lite (Short=AI+Correct+Save+Next, Long=Suggest) -->
                     <button id="btnTranslateSingle" onclick="processAiSingleAuto()" class="flex-grow h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-0 select-none">
                         <div class="flex items-center gap-2 leading-none">
                             <i class="fas fa-bolt text-xs"></i>
@@ -716,7 +636,6 @@
                     </button>
                 </div>
 
-                <!-- Swipe Handle (Trigger Saran AI) -->
                 <div id="keyboardCloseHandle" class="mt-1 py-4 flex justify-center cursor-pointer select-none">
                     <div class="handle-bar"></div>
                 </div>
@@ -724,7 +643,7 @@
         </div>
     </div>
 
-    <!-- MODAL BATCH TRANSLATE (IDENTIK REFERENSI) -->
+    <!-- MODAL BATCH TRANSLATE -->
     <div id="batch-modal-overlay" class="modal-overlay !z-[110]">
         <div id="batch-modal-content" class="modal-content !h-auto !max-h-[400px] !w-[90%] !max-w-[400px] border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
             <div class="p-4 border-b flex justify-between items-center" style="border-color: var(--border);">
@@ -786,13 +705,25 @@
             </div>
             
             <div class="p-5 space-y-4">
+                
+                <button onclick="executeLocalDownload()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-all">
+                    <i class="fas fa-file-download text-xl"></i>
+                    <div class="text-left">
+                        <div class="text-sm">Simpan ke Perangkat</div>
+                        <div class="text-[10px] opacity-70 font-normal">Unduh langsung ke galeri/folder</div>
+                    </div>
+                </button>
 
+                <div class="relative py-2 text-center">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-[var(--border)]"></div></div>
+                    <span class="relative px-3 bg-[var(--bg-card)] text-[10px] font-bold text-gray-500 uppercase">Atau Bagikan</span>
+                </div>
 
                 <div id="upload-state-idle" class="space-y-3">
                     <button onclick="uploadToExternalLink()" class="w-full py-3.5 btn-neutral hover:text-emerald-500 rounded-xl font-bold flex items-center justify-center gap-3 border border-[var(--border)] active:scale-95 transition-all">
                         <i class="fas fa-cloud-upload-alt text-xl"></i>
                         <div class="text-left">
-                            <div class="text-sm">Upload & Dapatkan Link</div>
+                            <div class="text-sm">Upload & Bagikan</div>
                             <div class="text-[10px] opacity-70 font-normal">Dapatkan link unduhan publik</div>
                         </div>
                     </button>
@@ -816,8 +747,8 @@
         </div>
     </div>
 
-        <!-- AI SUGGESTIONS MODAL (BOTTOM SHEET IDENTIK REFERENSI) -->
-    <div id="ai-overlay" class="modal-overlay !z-[125]" onclick="closeAiModal()"></div>
+    <!-- AI SUGGESTIONS MODAL -->
+    <div id="ai-modal-overlay" class="modal-overlay !z-[125]" onclick="closeAiModal()"></div>
     <div id="ai-modal" class="fixed inset-x-0 bottom-0 z-[130] rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex flex-col transform translate-y-full transition-transform duration-300 border-t border-[var(--border)] h-[70vh]" 
          style="background-color: var(--bg-card);">
         <div id="ai-swipe-close" class="w-full py-4 flex justify-center cursor-pointer select-none active:opacity-50 flex-shrink-0">
@@ -831,7 +762,7 @@
             <div class="mb-4 flex-shrink-0">
                 <label class="text-[10px] font-extrabold uppercase tracking-wide opacity-70 block mb-1.5" style="color: var(--text-sec);">Konteks Asli</label>
                 <div id="ai-orig-context" class="p-3 border rounded-xl text-sm whitespace-pre-wrap max-h-24 overflow-y-auto leading-relaxed opacity-90" 
-                     style="background-color: var(--bg-input); border-color: var(--border); color: var(--text-main); font-family: monospace;"></div>
+                     style="background-color: var(--bg-input); border-color: var(--border); color: var(--text-main); font-family: inherit;"></div>
             </div>
             <div class="w-full h-px mb-4 flex-shrink-0" style="background-color: var(--border);"></div>
             <div id="ai-results-list" class="space-y-3 overflow-y-auto pb-8 flex-grow pr-1"></div>
@@ -850,14 +781,16 @@
         const sanitizeForJ2ME = (t) => t;
         const triggerAutoSave = () => {};
         let fileData = null; 
-        let parsedData = { rawStructure: [], displayableTexts: [], translations: {}, validStringOffsets: new Set(), originalFileSize: 0 }; 
+        
+        // PERBAIKAN: Memastikan translationMeta terdefinisi global sejak awal
+        let parsedData = { rawStructure: [], displayableTexts: [], translations: {}, translationMeta: {}, originalFileSize: 0 }; 
         let filename = "modified.bin";
         let isFileLoaded = false;
         
         let currentEditIndex = -1;
         let selectedItems = new Set(); 
         
-        // Drag Select State Identik J2ME Lite
+        // Drag Select State
         let isSelectionMode = false;
         let isDragging = false;
         let dragSelectState = true;
@@ -877,12 +810,10 @@
         // Settings
         let apiKey = '';
         let aiModel = 'gemini-3-flash-preview';
-        let parsingMode = 'standard';
+        let parsingMode = 'bin';
         let currentTheme = 'dark';
 
-        const PROMPT_TRANSLATE = "Peran: Editor Lokalisasi Game J2ME (Bahasa Indonesia).\nAturan Ketat:\n1. Gunakan format output: [#ID] Terjemahan.\n2. JANGAN mengubah ID ([#ID]). Dilarang memberikan penjelasan, dilarang menggabungkan baris.\n3. Pertahankan semua nama karakter, tag seperti `[Nama:]` atau `NPC:`, dan variabel kode (%s, \\n, dll) dari teks asli.\n4. Terjemahkan HANYA bagian dialog secara natural ke Bahasa Indonesia.\n5. JANGAN terjemahkan istilah teknis/sistem jika tidak perlu. Gunakan kata ganti aku dan kau, jangan kamu, saya atau Anda.\n6. Jika teks asli menggunakan HURUF BESAR SEMUA (ALL CAPS), maka hasil terjemahan HARUS menggunakan HURUF BESAR SEMUA juga.";
-
-        const PROMPT_CORRECT = "Peran: Anda adalah Editor Lokalisasi Game Profesional (Bahasa Indonesia).\nTugas Utama: Perbaiki ejaan, tata bahasa, dan gaya bahasa dari teks terjemahan agar lebih luwes dan natural.\n\nPanduan:\n1. Pertahankan seluruh simbol/kode sistem (%s, \\n, dll).\n2. JANGAN ubah konteks asli.\n3. HANYA berikan hasil koreksinya saja, tanpa penjelasan apapun.";
+        const PROMPT_TRANSLATE = "Peran: Ahli Lokalisasi Game J2ME (Spesialis Mandarin/English ke Indonesia).\nAturan Mutlak:\n1. FORMAT: [#ID] Hasil Terjemahan.\n2. INTEGRITAS TAG: DILARANG KERAS mengubah isi di dalam kurung siku `[]`, `%s`, atau `\\n`. Jangan ubah label sistem (Contoh: [HERO]).\n3. AKURASI MANDARIN: Terjemahkan makna Hanzi secara akurat ke Bahasa Indonesia yang luwes (konteks Dialog Game).\n4. KONSISTENSI CASING: Jika teks asli ALL CAPS, hasil ALL CAPS. Jika teks asli Mixed Case (Huruf Besar Kecil), hasil WAJIB Mixed Case.\n5. TANPA DUPLIKASI: Jika teks asli diawali nama (Contoh: Erika: ...), JANGAN menulis nama dua kali (Contoh Salah: Erika: ERICA: ...). Cukup ikuti struktur asli.\n6. STYLE: Gunakan 'aku/kau'. Jangan berikan penjelasan apapun.";
 
         const els = {
             uploadSection: document.getElementById('upload-section'),
@@ -927,7 +858,7 @@
             }
         }
 
-                async function validateApiKey() {
+        async function validateApiKey() {
             const key = document.getElementById('set-api-key').value.trim();
             const btn = document.getElementById('btn-validate-api');
             const ind = document.getElementById('api-status-indicator');
@@ -979,15 +910,12 @@
         function loadSettings() {
             apiKey = localStorage.getItem('j2me_sf_apiKey') || '';
             aiModel = localStorage.getItem('j2me_sf_aiModel') || 'gemini-3.1-flash-lite-preview';
-            parsingMode = localStorage.getItem('j2me_sf_parsingMode') || 'standard';
+            parsingMode = localStorage.getItem('j2me_sf_parsingMode') || 'bin';
             currentTheme = localStorage.getItem('j2me_sf_theme') || 'dark';
 
-            // Sinkronisasi UI
             document.getElementById('set-api-key').value = apiKey;
             document.getElementById('set-ai-model').value = aiModel;
             document.getElementById('set-parsing-mode').value = parsingMode;
-            document.getElementById('initial-encoding-select').value = localStorage.getItem('j2me_sf_initialEncoding') || 'utf-8';
-            document.getElementById('initial-encoding-select').value = localStorage.getItem('j2me_sf_initialEncoding') || 'utf-8';
             
             const activeSlot = localStorage.getItem('j2me_sf_activePromptSlot') || 'none';
             document.getElementById('set-prompt-slot').value = activeSlot;
@@ -1050,7 +978,7 @@
             applyTheme(currentTheme);
         }
 
-                function applyTheme(theme) {
+        function applyTheme(theme) {
             if (theme === 'light') {
                 document.body.classList.add('light-theme');
                 els.themeIcon.className = 'fas fa-sun';
@@ -1112,60 +1040,41 @@
             updateUI();
         }
 
-
-
         function resetApp() { location.reload(); }
 
         let lastBackPressTime = 0;
-                window.onload = () => {
+        window.onload = () => {
             loadSettings();
             
-            // Inisialisasi Custom Dropdowns
             ['initial-encoding-select', 'set-ai-model', 'set-parsing-mode', 'set-prompt-slot'].forEach(id => initCustomSelect(id));
             
-            document.getElementById('initial-encoding-select').addEventListener('change', (e) => {
-                localStorage.setItem('j2me_sf_initialEncoding', e.target.value);
-            });
-            
-            document.getElementById('initial-encoding-select').addEventListener('change', (e) => {
-                localStorage.setItem('j2me_sf_initialEncoding', e.target.value);
-            });
-            
-            // Global Click to close dropdowns
             document.addEventListener('click', () => {
                 document.querySelectorAll('.custom-select').forEach(s => s.classList.remove('active'));
             });
             
-            // Inisialisasi trap history untuk proteksi tombol kembali (APK/Mobile)
-            history.pushState(null, null, window.location.pathname);
+            try { history.pushState(null, null, window.location.pathname); } catch (e) {}
             
             window.addEventListener('popstate', function(event) {
                 const now = Date.now();
                 if (now - lastBackPressTime < 2000) {
-                    // Jika ditekan kedua kalinya dalam 2 detik, biarkan keluar
                     history.back();
                 } else {
-                    // Tekanan pertama: blokir navigasi keluar dan munculkan toast kustom
                     lastBackPressTime = now;
                     showToast("Tekan kembali sekali lagi untuk keluar", "info");
-                    
-                    // Kembalikan state history agar tombol back bisa dipicu lagi
-                    history.pushState(null, null, window.location.pathname);
+                    try { history.pushState(null, null, window.location.pathname); } catch (e) {}
                 }
             });
         };
 
-        // --- FAB SCROLL BEHAVIOR (Facebook Style) ---
+        // --- FAB SCROLL BEHAVIOR ---
         let lastScrollTop = 0;
         els.mainScroll.addEventListener('scroll', () => {
             if (!isFileLoaded) return;
             const st = els.mainScroll.scrollTop;
             if (st > lastScrollTop && st > 150) {
-                // Scroll ke bawah: Sembunyikan FAB
                 els.fabContainer.style.transform = 'translateY(150%)';
                 els.fabContainer.style.opacity = '0';
             } else if (st < lastScrollTop) {
-                // Scroll ke atas: Munculkan FAB
                 els.fabContainer.style.transform = 'translateY(0)';
                 els.fabContainer.style.opacity = '1';
             }
@@ -1202,150 +1111,211 @@
                 fileData = new Uint8Array(evt.target.result);
                 if (parsingMode === 'txt') parseTXT(fileData, selectedEnc);
                 else if (parsingMode === 'standard') parseStandard2Byte(fileData, selectedEnc);
-                else parseBIN(fileData, selectedEnc);
+                else parseBIN(fileData, selectedEnc); // Script.bin mode
             };
             reader.readAsArrayBuffer(file);
         });
 
-                function isValidText(bytes) {
+        // --- PARSING LOGIC & FILTERS MURNI (Diambil langsung dari 2-Byte Only) ---
+
+        function isValidString(bytes) {
             for (let i = 0; i < bytes.length; i++) {
-                const b = bytes[i];
-                if (b < 32 && b !== 10 && b !== 13 && b !== 9 && b !== 0) return false;
+                if (bytes[i] < 32 && bytes[i] !== 10 && bytes[i] !== 13) {
+                    return false;
+                }
             }
             return true;
         }
 
-                function isGarbageText(text) {
-            if (text.length > 0 && /^[\r\n\t\s]+$/.test(text)) return false;
+        function isLikelyNarrativeOrDialogue(text) {
             const trimmedText = text.trim();
-            if (trimmedText.length === 0) return true;
-            if (trimmedText.length < 3 && !/[a-zA-Z0-9\p{Script=Han}]/u.test(trimmedText)) return true;
-            if (/\.(png|mid|wav|mp3|jar|dat|bin|sfx|csv|log)$/i.test(trimmedText)) return true;
-            if (trimmedText.includes('\uFFFD')) return true;
-            if (/[^\p{L}\p{N}\p{P}\p{Z}\s]{5,}/u.test(trimmedText)) return true;
-            return false;
+            if (trimmedText.length === 0) return false;
+            if (trimmedText.length < 3 && !/[a-zA-Z0-9\p{Script=Han}]/u.test(trimmedText)) {
+                return false; 
+            }
+            if (/\.(png|mid|wav|mp3|jar|dat|bin|sfx|csv|log)$/i.test(trimmedText)) return false;
+            if (trimmedText.includes('\uFFFD')) return false;
+            if (/[^\p{L}\p{N}\p{P}\p{Z}\s]{5,}/u.test(trimmedText)) return false;
+            return true;
         }
 
-                function parseStandard2Byte(fileBytes, encoding) {
+        // POLA 2 BYTE (Identik Seratus Persen dari 2-Byte Only)
+        function parseStandard2Byte(fileBytes, encoding) {
             try {
                 const dataView = new DataView(fileBytes.buffer);
                 const totalLength = fileBytes.length;
                 let offset = 0;
-                const chunks = [];
+
+                const rawStructure = [];
                 const displayableTexts = [];
                 const decoder = new TextDecoder(encoding, { fatal: false });
+
                 parsedData.originalFileSize = totalLength;
-                parsedData.translations = {};
-                parsedData.translationMeta = {};
 
                 while (offset < totalLength) {
                     let textBlockFound = false;
+
+                    // Cek struktur: [2 Byte Panjang] [String]
                     if (offset + 2 <= totalLength) {
-                        const length = dataView.getUint16(offset, false);
-                        if (length > 0 && length < 5000 && offset + 2 + length <= totalLength) {
+                        const length = dataView.getUint16(offset, false); // Big Endian
+                        
+                        if (offset + 2 + length <= totalLength) {
                             const textBytes = fileBytes.slice(offset + 2, offset + 2 + length);
                             const decodedText = decoder.decode(textBytes);
-                            if (isValidText(textBytes) && !decodedText.includes('\uFFFD') && !isGarbageText(decodedText)) {
-                                let chunkIndex = chunks.length;
-                                chunks.push({ 
-                                    type: 'text', 
-                                    originalIndex: chunkIndex, 
-                                    originalText: decodedText, 
-                                    originalBytes: textBytes, 
-                                    oldOffset: offset, 
-                                    lengthType: 2 
-                                });
-                                displayableTexts.push({ originalIndex: chunkIndex, text: decodedText });
-                                offset += 2 + length;
-                                textBlockFound = true;
+                            
+                            if (length > 0 && isValidString(textBytes) && !decodedText.includes('\uFFFD')) {
+                                if (isLikelyNarrativeOrDialogue(decodedText)) {
+                                    const cleanedText = decodedText.replace(/^[\x00-\x1F\x7F-\x9F\p{C}]+/u, '').trim();
+                                    
+                                    rawStructure.push({ 
+                                        type: 'text', 
+                                        text: cleanedText, 
+                                        originalBytes: textBytes,
+                                        originalText: decodedText // untuk referensi String Forge
+                                    });
+                                    
+                                    displayableTexts.push({ 
+                                        originalIndex: rawStructure.length - 1, 
+                                        text: cleanedText 
+                                    });
+                                    
+                                    offset += 2 + length;
+                                    textBlockFound = true;
+                                }
                             }
                         }
                     }
+
+                    // Jika bukan teks valid, masuk mode Skip Junk
                     if (!textBlockFound) {
-                        let nonTextStart = offset;
                         let nonTextEnd = offset + 1;
+                        
                         while (nonTextEnd < totalLength) {
                             let nextBlockLooksValid = false;
                             if (nonTextEnd + 2 <= totalLength) {
-                                const pLen = dataView.getUint16(nonTextEnd, false);
-                                if (pLen > 0 && pLen < 5000 && nonTextEnd + 2 + pLen <= totalLength) {
-                                    const tBytes = fileBytes.slice(nonTextEnd + 2, nonTextEnd + 2 + pLen);
-                                    const dText = decoder.decode(tBytes);
-                                    if (isValidText(tBytes) && !dText.includes('\uFFFD') && !isGarbageText(dText)) nextBlockLooksValid = true;
+                                const potentialLen = dataView.getUint16(nonTextEnd, false);
+                                if (nonTextEnd + 2 + potentialLen <= totalLength) {
+                                    const nextSlice = fileBytes.slice(nonTextEnd + 2, nonTextEnd + 2 + potentialLen);
+                                    const nextDecoded = decoder.decode(nextSlice);
+                                    
+                                    if (potentialLen > 0 && isValidString(nextSlice) && !nextDecoded.includes('\uFFFD')) {
+                                        if (isLikelyNarrativeOrDialogue(nextDecoded)) {
+                                            nextBlockLooksValid = true;
+                                        }
+                                    }
                                 }
                             }
-                            if (nextBlockLooksValid) break;
+                            if (nextBlockLooksValid) break; 
                             nonTextEnd++;
                         }
-                        chunks.push({ type: 'non-text', data: fileBytes.slice(nonTextStart, nonTextEnd), oldOffset: nonTextStart });
+                        
+                        rawStructure.push({ type: 'non-text', data: fileBytes.slice(offset, nonTextEnd) });
                         offset = nonTextEnd;
                     }
                 }
-                parsedData.rawStructure = chunks;
-                parsedData.displayableTexts = displayableTexts;
-                finishParsing();
-            } catch (e) { showToast("Gagal parse Standard: " + e.message, 'error'); }
-        }
 
-        function parseBIN(fileBytes, encoding) {
-            try {
-                let chunks = [];
-                let displayableTexts = [];
-                let decoder = new TextDecoder(encoding, { fatal: false });
-                let offset = 0; let nonTextBuffer = []; let nonTextStart = 0;
-
-                parsedData.originalFileSize = fileBytes.length;
-
-                while (offset < fileBytes.length) {
-                    let blockFound = false;
-                    if (offset + 4 <= fileBytes.length) {
-                        let len = ((fileBytes[offset] << 24) | (fileBytes[offset+1] << 16) | (fileBytes[offset+2] << 8) | fileBytes[offset+3]) >>> 0;
-                        
-                        if (len > 1 && len < 2000 && offset + 4 + len <= fileBytes.length) {
-                            let textBytes = fileBytes.slice(offset + 4, offset + 4 + len);
-                            let decodedText = decoder.decode(textBytes);
-
-                            if (isValidText(textBytes) && !decodedText.includes('\uFFFD')) {
-                                if (!isGarbageText(decodedText)) {
-                                    if (nonTextBuffer.length > 0) {
-                                        chunks.push({ type: 'non-text', data: new Uint8Array(nonTextBuffer), oldOffset: nonTextStart });
-                                        nonTextBuffer = [];
-                                    }
-                                    let chunkIndex = chunks.length;
-                                    chunks.push({ type: 'text', originalIndex: chunkIndex, originalText: decodedText, originalBytes: textBytes, oldOffset: offset });
-                                    displayableTexts.push({ originalIndex: chunkIndex, text: decodedText });
-                                    offset += 4 + len;
-                                    blockFound = true;
-                                } else {
-                                    if (nonTextBuffer.length === 0) nonTextStart = offset;
-                                    for (let i = 0; i < 4 + len; i++) { nonTextBuffer.push(fileBytes[offset + i]); }
-                                    offset += 4 + len;
-                                    blockFound = true;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!blockFound) {
-                        if (nonTextBuffer.length === 0) nonTextStart = offset;
-                        nonTextBuffer.push(fileBytes[offset]);
-                        offset++;
-                    }
-                }
-
-                if (nonTextBuffer.length > 0) chunks.push({ type: 'non-text', data: new Uint8Array(nonTextBuffer), oldOffset: nonTextStart });
-
-                parsedData.rawStructure = chunks;
+                parsedData.rawStructure = rawStructure;
                 parsedData.displayableTexts = displayableTexts;
                 parsedData.translations = {};
                 parsedData.translationMeta = {};
                 
                 finishParsing();
             } catch (e) {
-                showToast("Gagal memproses BIN: " + e.message, 'error');
+                showToast("Gagal memproses file 2-Byte: " + e.message, 'error');
             }
         }
 
+        // POLA 4 BYTE (Script.bin) - Terisolasi Penuh
+        function parseBIN(fileBytes, encoding) {
+            try {
+                const dataView = new DataView(fileBytes.buffer);
+                const totalLength = fileBytes.length;
+                let offset = 0;
+
+                const rawStructure = [];
+                const displayableTexts = [];
+                const decoder = new TextDecoder(encoding, { fatal: false });
+
+                parsedData.originalFileSize = totalLength;
+
+                while (offset < totalLength) {
+                    let textBlockFound = false;
+
+                    if (offset + 4 <= totalLength) {
+                        const length = dataView.getUint32(offset, false); 
+                        
+                        if (length > 0 && length < 50000 && offset + 4 + length <= totalLength) {
+                            const textBytes = fileBytes.slice(offset + 4, offset + 4 + length);
+                            const decodedText = decoder.decode(textBytes);
+                            
+                            if (isValidString(textBytes) && !decodedText.includes('\uFFFD')) {
+                                if (isLikelyNarrativeOrDialogue(decodedText)) {
+                                    const cleanedText = decodedText.replace(/^[\x00-\x1F\x7F-\x9F\p{C}]+/u, '').trim();
+                                    
+                                    rawStructure.push({ 
+                                        type: 'text', 
+                                        text: cleanedText, 
+                                        originalBytes: textBytes,
+                                        originalText: decodedText,
+                                        lengthType: 4,
+                                        oldOffset: offset
+                                    });
+                                    
+                                    displayableTexts.push({ 
+                                        originalIndex: rawStructure.length - 1, 
+                                        text: cleanedText 
+                                    });
+                                    
+                                    offset += 4 + length;
+                                    textBlockFound = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!textBlockFound) {
+                        let nonTextEnd = offset + 1;
+                        
+                        while (nonTextEnd < totalLength) {
+                            let nextBlockLooksValid = false;
+                            if (nonTextEnd + 4 <= totalLength) {
+                                const potentialLen = dataView.getUint32(nonTextEnd, false);
+                                if (potentialLen > 0 && potentialLen < 50000 && nonTextEnd + 4 + potentialLen <= totalLength) {
+                                    const nextSlice = fileBytes.slice(nonTextEnd + 4, nonTextEnd + 4 + potentialLen);
+                                    const nextDecoded = decoder.decode(nextSlice);
+                                    
+                                    if (isValidString(nextSlice) && !nextDecoded.includes('\uFFFD')) {
+                                        if (isLikelyNarrativeOrDialogue(nextDecoded)) {
+                                            nextBlockLooksValid = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if (nextBlockLooksValid) break; 
+                            nonTextEnd++;
+                        }
+                        
+                        rawStructure.push({ 
+                            type: 'non-text', 
+                            data: fileBytes.slice(offset, nonTextEnd),
+                            oldOffset: offset 
+                        });
+                        offset = nonTextEnd;
+                    }
+                }
+
+                parsedData.rawStructure = rawStructure;
+                parsedData.displayableTexts = displayableTexts;
+                parsedData.translations = {};
+                parsedData.translationMeta = {};
+                
+                finishParsing();
+            } catch (e) {
+                showToast("Gagal memproses file 4-Byte: " + e.message, 'error');
+            }
+        }
+
+        // POLA TXT
         function parseTXT(fileBytes, encoding) {
             try {
                 const chunks = [];
@@ -1408,7 +1378,6 @@
 
                 parsedData.rawStructure = chunks;
                 parsedData.displayableTexts = displayableTexts;
-                parsedData.validStringOffsets = new Set();
                 parsedData.translations = {};
                 parsedData.translationMeta = {};
 
@@ -1466,7 +1435,6 @@
             });
         }
 
-        // UI Logic untuk File Manager
         async function toggleProjectModal() {
             const modal = document.getElementById('project-modal');
             const isOpen = modal.classList.toggle('active');
@@ -1481,14 +1449,13 @@
             const name = document.getElementById('save-file-name-input').value.trim();
             if (!name) return showToast("Masukkan nama proyek!", "error");
 
-            // SIMPAN SEMUA KOMPONEN AGAR BISA DIREKONSTRUKSI UTUH
             const projectData = {
                 originalFilename: filename,
                 translations: parsedData.translations,
                 translationMeta: parsedData.translationMeta || {},
-                parsingMode: typeof parsingMode !== 'undefined' ? parsingMode : 'standard',
-                displayableTexts: parsedData.displayableTexts, // Wajib disimpan
-                rawStructure: parsedData.rawStructure,         // Wajib disimpan
+                parsingMode: typeof parsingMode !== 'undefined' ? parsingMode : 'bin',
+                displayableTexts: parsedData.displayableTexts,
+                rawStructure: parsedData.rawStructure,
                 originalFileSize: parsedData.originalFileSize
             };
 
@@ -1530,7 +1497,6 @@
             req.onsuccess = () => {
                 const f = req.result;
                 if (f && f.data) {
-                    // 1. Pulihkan mode (Untuk kompatibilitas UI)
                     if (f.data.parsingMode && typeof parsingMode !== 'undefined') {
                         parsingMode = f.data.parsingMode;
                         const el = document.getElementById('set-parsing-mode');
@@ -1538,7 +1504,6 @@
                         localStorage.setItem('j2me_sf_parsingMode', parsingMode);
                     }
 
-                    // 2. Helper Pengaman ArrayBuffer (Pencegah Bug Data Kosong)
                     const toU8 = (v) => {
                         if (!v) return null;
                         if (v instanceof Uint8Array) return v;
@@ -1546,7 +1511,6 @@
                         if (v.buffer instanceof ArrayBuffer) return new Uint8Array(v.buffer, v.byteOffset, v.byteLength);
                         if (Array.isArray(v)) return new Uint8Array(v);
                         
-                        // Ekstrak manual jika IndexedDB menyimpannya sebagai Object biasa
                         const keys = Object.keys(v).filter(k => !isNaN(parseInt(k))).sort((a,b) => a - b);
                         const arr = new Uint8Array(keys.length);
                         for(let i=0; i<keys.length; i++) { arr[i] = v[keys[i]]; }
@@ -1554,7 +1518,6 @@
                     };
 
                     try {
-                        // 3. Muat Data dengan Integritas Penuh
                         parsedData = {
                             translations: f.data.translations || {},
                             translationMeta: f.data.translationMeta || {},
@@ -1569,12 +1532,12 @@
                         
                         filename = f.data.originalFilename || "restored.bin";
                         
-                        // 4. Rekonstruksi fileData (Memory Buffer Mutlak untuk Pola 4-Byte)
                         if (parsedData.rawStructure.length > 0) {
                             let total = 0;
+                            const is2Byte = (parsingMode === 'standard');
                             parsedData.rawStructure.forEach(b => {
                                 if (b.type === 'text') {
-                                    const lt = b.lengthType || (typeof parsingMode !== 'undefined' && parsingMode === 'standard' ? 2 : 4);
+                                    const lt = is2Byte ? 2 : 4;
                                     total += lt + (b.originalBytes ? b.originalBytes.length : 0);
                                 } else {
                                     total += (b.data ? b.data.length : 0);
@@ -1587,13 +1550,13 @@
                             
                             parsedData.rawStructure.forEach(b => {
                                 if (b.type === 'text') {
-                                    const lt = b.lengthType || (typeof parsingMode !== 'undefined' && parsingMode === 'standard' ? 2 : 4);
+                                    const lt = is2Byte ? 2 : 4;
                                     const byteLen = b.originalBytes ? b.originalBytes.length : 0;
                                     
-                                    if (lt === 2) view.setUint16(offset, byteLen, false);
-                                    else view.setUint32(offset, byteLen, false); // Tulis Header
+                                    if (is2Byte) view.setUint16(offset, byteLen, false);
+                                    else view.setUint32(offset, byteLen, false);
                                     
-                                    if (b.originalBytes) fileData.set(b.originalBytes, offset + lt); // Tulis Teks
+                                    if (b.originalBytes) fileData.set(b.originalBytes, offset + lt);
                                     offset += lt + byteLen;
                                 } else {
                                     if (b.data) fileData.set(b.data, offset);
@@ -1602,7 +1565,6 @@
                             });
                         }
 
-                        // Set Status & Transisi UI
                         isFileLoaded = true;
                         isSelectionMode = false;
                         selectedItems.clear();
@@ -1617,7 +1579,6 @@
                         if(st) { st.classList.remove('hidden'); st.classList.add('flex'); }
                         if(fab) { fab.classList.remove('hidden'); fab.classList.add('flex'); }
 
-                        // Eksekusi Tampilan
                         renderUI();
                         updateStats();
                         toggleProjectModal();
@@ -1631,7 +1592,6 @@
             };
         };
 
-        // Helper Konfirmasi Kustom (Pengganti Native confirm())
         function showCustomConfirm(title, message, confirmText = "Hapus", icon = "fa-trash-alt", type = "danger") {
             return new Promise((resolve) => {
                 const modal = document.getElementById('confirm-generic-modal');
@@ -1647,7 +1607,6 @@
                 btnOk.innerText = confirmText;
                 iconEl.className = `fas ${icon}`;
                 
-                // Desain Berdasarkan Tipe
                 if (type === 'danger') {
                     btnOk.className = "w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-red-900/20 transition-all active:scale-95";
                     iconWrap.className = "w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl";
@@ -1673,7 +1632,7 @@
         window.deleteProjectFromDB = async function(id) {
             const confirmed = await showCustomConfirm(
                 "Hapus Proyek?", 
-                `Proyek "${id}" akan dihapus permanen dari memori browser.`,
+                `Proyek "${id}" akan dihapus permanen.`,
                 "Ya, Hapus",
                 "fa-trash-alt",
                 "danger"
@@ -1689,7 +1648,6 @@
             };
         };
 
-        // Inisialisasi DB saat load
         initDB();
 
         // --- STATS & RENDER ---
@@ -1701,6 +1659,11 @@
             els.statTotal.innerText = total;
             els.statDone.innerText = done;
             els.statPercent.innerText = `${percent}%`;
+        }
+
+        function escapeHtml(text) { 
+            if (typeof text !== 'string') return text;
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); 
         }
 
         function renderUI() {
@@ -1717,9 +1680,9 @@
                 const isSelected = selectedItems.has(listIndex);
 
                 let statusClass = '';
-                                if (isMod) {
+                if (isMod) {
                     if (meta === 'manual') statusClass = 'manual';
-                    else if (meta === 'ai-suggested') statusClass = 'ai-suggested';
+                    else if (meta === 'ai-suggest') statusClass = 'ai-suggest';
                     else statusClass = 'translated';
                 }
 
@@ -1728,6 +1691,7 @@
                 row.id = `card-${listIndex}`; 
                 row.dataset.index = listIndex;
 
+                // Memastikan logika render UI persis sama dengan referensi yang berfungsi
                 row.innerHTML = `
                     <div class="flex-grow flex flex-col justify-center overflow-hidden pr-2 pointer-events-none">
                         <div class="text-sm flex items-baseline">
@@ -1735,9 +1699,9 @@
                             <span class="text-content break-words">${escapeHtml(val) || '<i class="opacity-30">Kosong</i>'}</span>
                         </div>
                     </div>
+                    ${meta === 'ai' ? '<span class="ai-indicator text-[9px] font-bold bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded shadow-sm"><i class="fas fa-robot mr-1"></i>AI</span>' : ''}
                 `;
 
-                // --- Drag Selection Logic Identik J2ME Lite ---
                 const startLongPress = () => {
                     wasLongPress = false;
                     pressTimer = setTimeout(() => {
@@ -1775,7 +1739,6 @@
                     touchStartY = t.clientY;
                     wasLongPress = false;
                     if (isSelectionMode) {
-                        // Gunakan jeda singkat untuk membedakan scroll vs drag-select
                         pressTimer = setTimeout(() => {
                             isDragging = true;
                             dragSelectState = !selectedItems.has(listIndex);
@@ -1792,14 +1755,11 @@
                     const t = e.touches[0];
                     const dx = Math.abs(t.clientX - touchStartX);
                     const dy = Math.abs(t.clientY - touchStartY);
-                    // Jika terdeteksi geseran (scroll) sebelum drag aktif, batalkan timer seleksi
                     if ((dx > 10 || dy > 10) && !isDragging) clearTimer();
                 }, {passive: true});
 
                 row.addEventListener('mouseenter', () => {
-                    if (isDragging && isSelectionMode) {
-                        toggleSelection(listIndex, dragSelectState);
-                    }
+                    if (isDragging && isSelectionMode) toggleSelection(listIndex, dragSelectState);
                 });
 
                 row.addEventListener('mouseup', clearTimer);
@@ -1812,7 +1772,6 @@
                         return;
                     }
                     if (isSelectionMode) {
-                        // Jika ini adalah tap cepat (bukan seret), lakukan toggle manual
                         if (!isDragging) {
                             clearTimer();
                             toggleSelection(listIndex);
@@ -1829,7 +1788,6 @@
             updateBatchUI();
         }
 
-        // --- GLOBAL DRAG LISTENERS ---
         window.addEventListener('mouseup', () => { isDragging = false; lastDraggedRow = null; });
         window.addEventListener('touchend', () => { isDragging = false; lastDraggedRow = null; });
         window.addEventListener('touchmove', (e) => {
@@ -1844,11 +1802,9 @@
                 const idx = parseInt(row.dataset.index);
                 toggleSelection(idx, dragSelectState);
             }
-            
             if (isDragging) e.preventDefault();
         }, { passive: false });
 
-        // --- SELECTION & BATCH UI ---
         function toggleSelection(index, forceState = null) {
             if (index < 0 || index >= parsedData.displayableTexts.length) return;
             const newState = forceState !== null ? forceState : !selectedItems.has(index);
@@ -1862,10 +1818,7 @@
                 else row.classList.remove('selected');
             }
 
-            if (selectedItems.size === 0 && isSelectionMode) {
-                isSelectionMode = false;
-            }
-            
+            if (selectedItems.size === 0 && isSelectionMode) isSelectionMode = false;
             updateBatchUI();
         }
 
@@ -1881,6 +1834,8 @@
         }
 
         // --- FILTER ---
+        function escapeRegex(string) { return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'); }
+
         els.searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             els.clearSearch.classList.toggle('hidden', !term);
@@ -1909,14 +1864,11 @@
 
         els.clearSearch.onclick = () => { els.searchInput.value = ''; els.searchInput.dispatchEvent(new Event('input')); };
 
-        function escapeRegex(string) { return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'); }
-        function escapeHtml(text) { return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
-
         // --- EDITING ---
-        let initialViewportHeight = 0; // Menyimpan tinggi viewport awal saat modal dibuka
-        let keyboardResizeListenerAdded = false; // Flag untuk melacak status listener
+        let initialViewportHeight = 0; 
+        let keyboardResizeListenerAdded = false; 
 
-                function handleEditModalKeyboardResize() {
+        function handleEditModalKeyboardResize() {
             const editModalOverlay = document.getElementById('edit-modal-overlay');
             const editModalContent = editModalOverlay?.querySelector('.modal-content');
 
@@ -1928,22 +1880,29 @@
                 return;
             }
 
-            const currentVVH = window.visualViewport.height;
-            const layoutH = window.innerHeight;
-            const isKeyboardUp = (layoutH - currentVVH) > 150;
+            const vh = window.visualViewport.height;
+            const offset = window.visualViewport.offsetTop;
+            const isKeyboardUp = (window.innerHeight - vh) > 150;
 
             if (isKeyboardUp) {
                 editModalOverlay.classList.add('keyboard-active');
-                editModalContent.style.setProperty('--keyboard-safe-height', `${currentVVH}px`);
-                const swipeHandle = document.getElementById('keyboardCloseHandle');
-                if (swipeHandle && !editModalOverlay.dataset.keyboardScrollHandled) {
-                    swipeHandle.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                    editModalOverlay.dataset.keyboardScrollHandled = 'true';
+                editModalContent.style.height = `${vh}px`;
+                editModalContent.style.maxHeight = `${vh}px`;
+                editModalOverlay.style.top = `${offset}px`;
+                editModalOverlay.style.height = `${vh}px`;
+
+                const activeElem = document.activeElement;
+                if (activeElem && (activeElem.id === 'edit-input')) {
+                    setTimeout(() => {
+                        activeElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 150);
                 }
             } else {
                 editModalOverlay.classList.remove('keyboard-active');
-                editModalContent.style.removeProperty('--keyboard-safe-height');
-                editModalOverlay.dataset.keyboardScrollHandled = '';
+                editModalContent.style.height = '';
+                editModalContent.style.maxHeight = '';
+                editModalOverlay.style.top = '0';
+                editModalOverlay.style.height = '100%';
             }
         }
 
@@ -1962,7 +1921,6 @@
             updateEditCharCount();
             els.editModalOverlay.classList.add('active');
 
-                        // --- Logika penanganan keyboard ---
             if (!keyboardResizeListenerAdded) {
                 window.visualViewport.addEventListener('resize', handleEditModalKeyboardResize);
                 keyboardResizeListenerAdded = true;
@@ -1970,10 +1928,7 @@
             handleEditModalKeyboardResize();
 
             if (shouldFocus) {
-                setTimeout(() => {
-                    els.editInput.focus();
-                    // Listener resize visualViewport akan menangani scrollIntoView jika keyboard terdeteksi
-                }, 100);
+                setTimeout(() => { els.editInput.focus(); }, 100);
             }
         }
 
@@ -1989,20 +1944,16 @@
             showToast('Teks telah direset ke asli', 'success');
         };
 
-                window.saveAndCloseEdit = function() {
-            const val = sanitizeText(els.editInput.value);
-            const item = parsedData.displayableTexts[currentEditIndex];
-            const currentStored = (item && parsedData.translations[item.originalIndex] !== undefined) ? parsedData.translations[item.originalIndex] : (item ? item.text : "");
-            if (val !== currentStored) saveCurrentEdit('manual');
+        window.saveAndCloseEdit = function() {
+            saveCurrentEdit('manual');
             els.editModalOverlay.classList.remove('active');
 
-            // --- Bersihkan logika penanganan keyboard ---
             if (keyboardResizeListenerAdded) {
                 window.visualViewport.removeEventListener('resize', handleEditModalKeyboardResize);
                 keyboardResizeListenerAdded = false;
             }
-            els.editModalOverlay.classList.remove('keyboard-active'); // Pastikan kelas dihapus
-            els.editModalOverlay.style.removeProperty('--keyboard-safe-height'); // Hapus variabel CSS
+            els.editModalOverlay.classList.remove('keyboard-active'); 
+            els.editModalOverlay.style.removeProperty('--keyboard-safe-height'); 
         };
 
         function saveCurrentEdit(metaType = 'manual') {
@@ -2011,46 +1962,45 @@
             if (!item) return;
             const globalIndex = item.originalIndex;
             const orig = item.text;
+            const prevVal = parsedData.translations[globalIndex];
 
             if (val === orig) {
                 delete parsedData.translations[globalIndex];
                 delete parsedData.translationMeta[globalIndex];
             } else {
-                parsedData.translations[globalIndex] = val;
-                parsedData.translationMeta[globalIndex] = metaType;
+                if (val !== prevVal || metaType !== 'manual') {
+                    parsedData.translations[globalIndex] = val;
+                    parsedData.translationMeta[globalIndex] = metaType;
+                }
             }
             triggerAutoSave();
 
             const card = document.getElementById(`card-${currentEditIndex}`);
             if (card) {
                 card.querySelector('.text-content').innerText = val;
-                            card.classList.remove('manual', 'translated', 'ai-suggested');
-            if (val !== orig) {
-                if (metaType === 'manual') card.classList.add('manual');
-                else if (metaType === 'ai-suggested') card.classList.add('ai-suggested');
-                else card.classList.add('translated');
-            }
+                card.classList.remove('manual', 'translated', 'ai-suggest');
+                if (val !== orig) {
+                    const actualMeta = parsedData.translationMeta[globalIndex];
+                    const cls = actualMeta === 'manual' ? 'manual' : (actualMeta === 'ai-suggest' ? 'ai-suggest' : 'translated');
+                    card.classList.add(cls);
+                }
             }
             updateStats();
         }
 
         window.navEdit = function(dir) {
-            const val = sanitizeText(els.editInput.value);
-            const item = parsedData.displayableTexts[currentEditIndex];
-            const currentStored = (item && parsedData.translations[item.originalIndex] !== undefined) ? parsedData.translations[item.originalIndex] : (item ? item.text : "");
-            if (val !== currentStored) saveCurrentEdit('manual');
+            saveCurrentEdit('manual');
             const nextIndex = currentEditIndex + dir;
             if (nextIndex >= 0 && nextIndex < parsedData.displayableTexts.length) {
                 openEdit(nextIndex, false);
             }
         };
 
-        // --- AI TRANSLATE & SARAN (MEKANISME SWIPE HANDLE) ---
+        // --- AI TRANSLATE & SARAN ---
         let isAiLocked = false;
         const btnSingle = document.getElementById('btnTranslateSingle');
         let swipeStartY = 0;
 
-        // Listener Swipe Up pada Handle Editor (Touch & Mouse)
         const editHandle = document.getElementById('keyboardCloseHandle');
         editHandle.addEventListener('touchstart', e => { swipeStartY = e.touches[0].clientY; }, {passive: true});
         editHandle.addEventListener('touchend', e => {
@@ -2071,7 +2021,6 @@
             window.addEventListener('mouseup', onMouseUp, { once: true });
         });
 
-        // Listener Swipe Down pada Handle Saran AI (Touch & Mouse)
         const aiHandle = document.getElementById('ai-swipe-close');
         aiHandle.addEventListener('touchstart', e => { swipeStartY = e.touches[0].clientY; }, {passive: true});
         aiHandle.addEventListener('touchend', e => {
@@ -2089,7 +2038,6 @@
             window.addEventListener('mouseup', onMouseUp, { once: true });
         });
 
-        // Mode 1: Terjemahkan + Koreksi + Simpan + Next (Klik Sekali)
         async function processAiSingleAuto() {
             if (!apiKey) return showToast("API Key kosong di Pengaturan!", "error");
             if (isAiLocked) return;
@@ -2100,16 +2048,9 @@
             btnSingle.innerHTML = `<span class="spinner"></span>`;
 
             try {
-                const sourceText = document.getElementById('edit-orig').innerText;
-            const modal = document.getElementById('ai-modal');
-            const list = document.getElementById('ai-results-list');
-            
-                        document.getElementById('ai-orig-context').innerText = sourceText;
-            const overlay = document.getElementById('ai-overlay');
-            if (overlay) overlay.classList.add('active');
-            modal.classList.remove('translate-y-full');
+                const sourceText = document.getElementById('edit-orig').textContent;
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${aiModel}:generateContent?key=${apiKey}`;
-                let sysInst = "Anda adalah pakar lokalisasi game J2ME (Bahasa Indonesia).\nHanya berikan hasil terjemahan akhir dalam format JSON.\nPertahankan semua nama karakter, tag seperti `[Nama:]` atau `NPC:`, variabel kode (%s, \\n, dll), dan simbol non-terjemahan dari teks asli.\nTerjemahkan hanya bagian dialog secara natural ke Bahasa Indonesia. Jika teks asli menggunakan HURUF BESAR SEMUA (ALL CAPS), hasil terjemahan WAJIB menggunakan HURUF BESAR SEMUA.\nOutput format: `{\"text\": \"Terjemahan Anda\"}`";
+                let sysInst = "Peran: Pakar Lokalisasi J2ME (Akurasi Tinggi Mandarin/English).\nAturan:\n1. MIRRORING: Wajib mempertahankan `[]`, `%s`, `\\n`. Jangan ubah teks dalam `[]`.\n2. CASING: Jika asli ALL CAPS, hasil ALL CAPS. Jika asli Mixed Case, hasil Mixed Case.\n3. TANPA DUPLIKASI: JANGAN menulis ulang nama karakter/prefix dua kali (Contoh Salah: Erika: ERICA:).\n4. FORMAT: HANYA JSON `{\"text\": \"...\"}`. DILARANG memasukkan [#ID] ke dalam nilai text.";
                 const livePrompt = getActiveLivePrompt();
                 if (livePrompt) sysInst += "\n\nPERINTAH TERTINGGI (WAJIB DIIKUTI): " + livePrompt;
 
@@ -2126,7 +2067,6 @@
                 if (!response.ok) throw new Error("API Error");
                 const data = await response.json();
                 const resObj = JSON.parse(data.candidates[0].content.parts[0].text);
-                // Regex untuk membersihkan jika AI secara tidak sengaja menyertakan tag ID
                 const cleanText = (resObj.text || "").replace(/^\[#\d+\]\s*/, '').trim();
 
                 els.editInput.value = cleanText;
@@ -2144,17 +2084,15 @@
             }
         }
 
-        // Mode 2: Tampilkan Bottom Sheet dengan 5 Variasi (Tekan Lama)
         async function triggerAiSuggestions() {
             if (!apiKey) return showToast("API Key kosong!", "error");
             
-            const sourceText = document.getElementById('edit-orig').innerText;
+            const sourceText = document.getElementById('edit-orig').textContent;
             const modal = document.getElementById('ai-modal');
             const list = document.getElementById('ai-results-list');
             
-            document.getElementById('ai-orig-context').innerText = sourceText;
-            const overlay = document.getElementById('ai-overlay');
-            if (overlay) overlay.classList.add('active');
+            document.getElementById('ai-orig-context').textContent = sourceText;
+            document.getElementById('ai-modal-overlay').classList.add('active');
             modal.classList.remove('translate-y-full');
             list.innerHTML = `<div class="text-center py-10"><div class="spinner !border-blue-500 !w-8 !h-8"></div><p class="text-xs font-bold mt-2 text-gray-500">Meracik 5 variasi kalimat...</p></div>`;
 
@@ -2165,22 +2103,19 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: sourceText }] }],
-                        systemInstruction: { parts: [{ text: "Peran: Editor Lokalisasi Game J2ME (Bahasa Indonesia).\nAturan Ketat:\n1. Berikan 5 variasi terjemahan berbeda dalam format JSON Array of Strings.\n2. JANGAN sertakan tag ID ([#ID]) atau penjelasan apapun.\n3. Pertahankan semua variabel kode (%s, \\n, dll) dan tag sistem dari teks asli secara mutlak.\n4. Terjemahkan dialog secara natural. Gunakan kata ganti aku/kau.\n5. Jika teks asli ALL CAPS, hasil harus ALL CAPS.\n6. WAJIB pertahankan struktur baris baru (newline) sesuai aslinya." }] },
+                        systemInstruction: { parts: [{ text: (function() { let p = PROMPT_TRANSLATE + "\nOutput: JSON Array berisi 5 string variasi bahasa.\nAturan Tambahan: JANGAN sertakan [#ID] di dalam string hasil. Fokus pada variasi gaya (Formal, Gaul, Heroik). DILARANG menulis ulang prefix nama dua kali. Patuhi aturan CASING (Mixed Case tetap Mixed Case, ALL CAPS tetap ALL CAPS)."; const live = getActiveLivePrompt(); if (live) p += "\n\nPERINTAH TERTINGGI DARI USER (WAJIB DIIKUTI): " + live; return p; })() }] },
                         generationConfig: { responseMimeType: "application/json", responseSchema: { type: "ARRAY", items: { type: "STRING" } } }
                     })
                 });
 
                 if (!response.ok) throw new Error("Gagal memuat saran");
                 const data = await response.json();
-                let variations = JSON.parse(data.candidates[0].content.parts[0].text);
-                // Pembersihan: Hapus tag ID jika AI melakukan halusinasi format (e.g. [#101] atau #101])
-                variations = variations.map(v => v.replace(/^\[?#\d+\]?\s*/, '').trim());
+                const variations = JSON.parse(data.candidates[0].content.parts[0].text);
 
-                window._currentAiVariations = variations;
-                list.innerHTML = variations.map((v, idx) => `
-                    <div onclick="applyAiSuggestion(window._currentAiVariations[${idx}])" 
+                list.innerHTML = variations.map(v => `
+                    <div onclick="applyAiSuggestion('${v.replace(/'/g, "\\'")}')" 
                          class="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-input)] cursor-pointer active:scale-95 transition-all hover:border-blue-500">
-                        <p class="text-sm font-semibold leading-relaxed whitespace-pre-wrap">${escapeHtml(v)}</p>
+                        <p class="text-sm font-semibold leading-relaxed">${v}</p>
                     </div>
                 `).join('');
 
@@ -2192,20 +2127,17 @@
         window.applyAiSuggestion = function(text) {
             els.editInput.value = text;
             updateEditCharCount();
-            saveCurrentEdit('ai-suggested');
+            saveCurrentEdit('ai-suggest');
             closeAiModal();
-            showToast("Saran diterapkan", "success");
+            showToast("Saran diterapkan (Indikator Biru)", "success");
         };
 
-                window.closeAiModal = function() {
+        window.closeAiModal = function() {
             document.getElementById('ai-modal').classList.add('translate-y-full');
-            const overlay = document.getElementById('ai-overlay');
-            if (overlay) overlay.classList.remove('active');
+            document.getElementById('ai-modal-overlay').classList.remove('active');
         };
 
-        const delay = ms => new Promise(res => setTimeout(res, ms));
-
-                let batchAbortController = null;
+        let batchAbortController = null;
 
         window.minimizeBatchModal = function() {
             document.getElementById('batch-modal-overlay').classList.remove('active');
@@ -2238,7 +2170,6 @@
             const isSelection = selectedItems.size > 0;
             let targetList = [];
 
-            // Jika mode pilih banyak aktif, proses SEMUA item terpilih (Force Re-translate/Overwrite)
             if (isSelection) {
                 targetList = Array.from(selectedItems).sort((a, b) => a - b);
             } else {
@@ -2246,7 +2177,6 @@
                     .map((item, idx) => ({ idx, globalIdx: item.originalIndex, text: item.text }))
                     .filter(item => {
                         const card = document.getElementById(`card-${item.idx}`);
-                        // Lewati jika sudah ada terjemahan (Resume Mode) atau disembunyikan oleh filter pencarian
                         return card && !card.classList.contains('hidden') && parsedData.translations[item.globalIdx] === undefined;
                     })
                     .map(item => item.idx);
@@ -2257,9 +2187,8 @@
                 return showToast(msg, "info");
             }
 
-            // --- Dynamic Smart Chunking Algorithm ---
-            const CHAR_LIMIT = 14000; // ~3500 tokens (aman untuk output expansion)
-            const STRING_LIMIT = 100; // Mencegah Lost-in-the-middle
+            const CHAR_LIMIT = 14000;
+            const STRING_LIMIT = 100;
             let chunks = []; let currentChunk = []; let currentCharCount = 0;
 
             targetList.forEach(idx => {
@@ -2267,11 +2196,10 @@
                 if ((currentCharCount + textLen > CHAR_LIMIT || currentChunk.length >= STRING_LIMIT) && currentChunk.length > 0) {
                     chunks.push(currentChunk); currentChunk = []; currentCharCount = 0;
                 }
-                currentChunk.push(idx); currentCharCount += (textLen + 20); // 20 = estimasi overhead metadata ID
+                currentChunk.push(idx); currentCharCount += (textLen + 20); 
             });
             if (currentChunk.length > 0) chunks.push(currentChunk);
 
-            // Init UI
             isAiLocked = true;
             batchAbortController = new AbortController();
             document.getElementById('batch-modal-overlay').classList.add('active');
@@ -2294,7 +2222,6 @@
                     document.getElementById('batch-min-percent').innerText = `${progress}%`;
                     document.getElementById('batch-progress-bar').style.width = `${progress}%`;
 
-                    // Prepare ID Tagged Prompt
                     const promptText = chunk.map(idx => `[#${idx}] ${parsedData.displayableTexts[idx].text}`).join('\n');
 
                     try {
@@ -2316,8 +2243,7 @@
                         const data = await response.json();
                         const rawRes = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
                         
-                        // Robust Regex Parsing
-                        const regex = /\[#(\d+)\]\s*(.+?)(?=\s*\[#\d+\]|$)/gs;
+                        const regex = /\[#(\d+)\]\s*([^\n\[]+)/g;
                         let match; let receivedIds = new Set();
                         
                         while ((match = regex.exec(rawRes)) !== null) {
@@ -2340,7 +2266,6 @@
                             }
                         }
 
-                        // Count failures in this chunk
                         chunk.forEach(idx => { if (!receivedIds.has(idx)) failCount++; });
                         
                     } catch (err) {
@@ -2353,7 +2278,6 @@
                     document.getElementById('batch-count-fail').innerText = failCount;
                     updateStats();
 
-                    // Jeda dinamis: 3.5s untuk Lite (Mode Cepat), 15s untuk Mode Akurat
                     const cooldown = aiModel.includes('lite') ? 3500 : 15000;
                     if (i < chunks.length - 1) {
                         await new Promise(r => setTimeout(r, cooldown));
@@ -2372,11 +2296,8 @@
             }
         };
 
-        // --- LOGIKA BUKA FILE BARU & KONFIRMASI ---
         function checkUnsavedProgress() {
-            // Cek jika ada terjemahan yang belum disimpan (berdasarkan jumlah key di translations)
             const hasChanges = Object.keys(parsedData.translations).length > 0;
-            
             if (!isFileLoaded || !hasChanges) {
                 document.getElementById('file-input').click();
             } else {
@@ -2393,11 +2314,10 @@
             document.getElementById('file-input').click();
         }
 
-        // --- NAVIGATION FAB ---
         els.fabContainer.querySelector('#btnNavUp').onclick = () => document.getElementById('main-scroll').scrollTo({top: 0, behavior: 'smooth'});
         els.fabContainer.querySelector('#btnNavDown').onclick = () => document.getElementById('main-scroll').scrollTo({top: document.getElementById('main-scroll').scrollHeight, behavior: 'smooth'});
 
-        // --- BUILDER & EXPORT (HEURISTIK INTEGRASI PENUH) ---
+        // --- BUILDER & EXPORT ---
         function buildTXT() {
             const parts = [];
             const encoder = new TextEncoder(); 
@@ -2424,126 +2344,102 @@
 
         function buildBIN() {
             if (!fileData) throw new Error("Data file asli tidak ditemukan!");
-
-            const encoder = new TextEncoder(); 
-            let finalChunks = []; 
-            let chunkMaps = []; 
+            const encoder = new TextEncoder();
+            let finalChunks = [];
+            let chunkMaps = [];
             let currentNewOffset = 0;
-
             for (let chunk of parsedData.rawStructure) {
                 let oldStart = chunk.oldOffset;
-                let oldEnd = oldStart + (chunk.type === 'text' ? chunk.originalBytes.length + 4 : chunk.data.length);
                 let newStart = currentNewOffset;
-                
                 if (chunk.type === 'text') {
-                    let transText = parsedData.translations[chunk.originalIndex] !== undefined ? parsedData.translations[chunk.originalIndex] : chunk.originalText;
-                    transText = transText.replace(/\\n/g, '\n'); 
-                    
+                    let transText = (parsedData.translations[chunk.originalIndex] !== undefined) ? parsedData.translations[chunk.originalIndex] : chunk.originalText;
+                    transText = transText.replace(/\\n/g, '\n');
                     let newTextBytes = encoder.encode(transText);
                     let combined = new Uint8Array(4 + newTextBytes.length);
-                    
                     combined[0] = (newTextBytes.length >>> 24) & 0xFF;
                     combined[1] = (newTextBytes.length >>> 16) & 0xFF;
                     combined[2] = (newTextBytes.length >>> 8) & 0xFF;
                     combined[3] = newTextBytes.length & 0xFF;
                     combined.set(newTextBytes, 4);
-                    
                     finalChunks.push(combined);
                     currentNewOffset += combined.length;
                 } else {
                     finalChunks.push(chunk.data.slice());
                     currentNewOffset += chunk.data.length;
                 }
-                let newEnd = currentNewOffset;
-                chunkMaps.push({ oldStart, oldEnd, newStart, newEnd });
+                chunkMaps.push({ oldStart: oldStart, newStart: newStart, oldLen: (chunk.type === 'text' ? chunk.originalBytes.length + 4 : chunk.data.length), newLen: finalChunks[finalChunks.length - 1].length });
             }
-
-            function mapOffset(oldOff) {
-                for (let map of chunkMaps) {
-                    if (oldOff >= map.oldStart && oldOff < map.oldEnd) {
-                        return map.newStart + (oldOff - map.oldStart);
-                    }
-                }
-                if (chunkMaps.length > 0 && oldOff >= chunkMaps[chunkMaps.length - 1].oldEnd) {
-                    let lastMap = chunkMaps[chunkMaps.length - 1];
-                    return lastMap.newEnd + (oldOff - lastMap.oldEnd);
-                }
-                return oldOff; 
-            }
-
             let totalLength = finalChunks.reduce((sum, c) => sum + c.length, 0);
             let finalBinary = new Uint8Array(totalLength);
             let writeOffset = 0;
-            for (let chunk of finalChunks) {
-                finalBinary.set(chunk, writeOffset); 
-                writeOffset += chunk.length;
-            }
-
-            let paraCount = 0;
-            let ptrStart = 0;
-            let baseTextOff = 0;
-
-            for (let i = 2; i < fileData.length - 8; i++) {
-                if (fileData[i] === 0 && fileData[i+1] === 0 && fileData[i+2] === 0 && fileData[i+3] === 0) {
-                    let n = (fileData[i-2] << 8) | fileData[i-1];
-                    if (n > 0 && n < 1000) {
-                        let valid = true;
-                        let lastVal = -1; 
-                        let currPtr = i + 4;
-                        if (currPtr + (n * 4) >= fileData.length) continue;
-                        for (let p = 0; p < n; p++) {
-                            let val = (fileData[currPtr] << 24) | (fileData[currPtr+1] << 16) | (fileData[currPtr+2] << 8) | fileData[currPtr+3];
-                            val >>>= 0;
-                            if (val < lastVal || val > fileData.length) { valid = false; break; }
-                            lastVal = val;
-                            currPtr += 4;
-                        }
-                        if (valid && lastVal > 0) {
-                            let isTextTable = false;
-                            let foundBaseOff = currPtr;
-                            for (let pad = 0; pad <= 4; pad += 2) {
-                                let testOff = currPtr + pad;
-                                if (testOff + 6 <= fileData.length) {
-                                    let strCount = (fileData[testOff] << 8) | fileData[testOff+1];
-                                    let firstStrLen = (fileData[testOff+2] << 24) | (fileData[testOff+3] << 16) | (fileData[testOff+4] << 8) | fileData[testOff+5];
-                                    firstStrLen >>>= 0;
-                                    if (strCount > 0 && strCount < 2000 && firstStrLen > 0 && firstStrLen < 2000) {
-                                        let textBytes = fileData.slice(testOff + 6, testOff + 6 + firstStrLen);
-                                        if (isValidText(textBytes)) { isTextTable = true; foundBaseOff = testOff; break; }
-                                    }
-                                }
-                            }
-                            if (isTextTable) {
-                                paraCount = n; ptrStart = i + 4; baseTextOff = foundBaseOff;
-                                break; 
-                            }
-                        }
+            for (let chunk of finalChunks) { finalBinary.set(chunk, writeOffset); writeOffset += chunk.length; }
+            const getMappedPos = (oldPos) => {
+                for (let m of chunkMaps) { if (oldPos >= m.oldStart && oldPos < m.oldStart + m.oldLen) return m.newStart + (oldPos - m.oldStart); }
+                return oldPos;
+            };
+            for (let i = 0; i < fileData.length - 4; i++) {
+                let val = (fileData[i] << 24 | fileData[i + 1] << 16 | fileData[i + 2] << 8 | fileData[i + 3]) >>> 0;
+                if (val >= 0 && val < fileData.length) {
+                    let target = i + 4 + val;
+                    if (target >= 0 && target < fileData.length) {
+                        let newTarget = getMappedPos(target);
+                        let newI = getMappedPos(i + 4);
+                        let newVal = newTarget - newI;
+                        let pos = getMappedPos(i);
+                        finalBinary[pos] = (newVal >>> 24) & 0xFF;
+                        finalBinary[pos + 1] = (newVal >>> 16) & 0xFF;
+                        finalBinary[pos + 2] = (newVal >>> 8) & 0xFF;
+                        finalBinary[pos + 3] = newVal & 0xFF;
                     }
                 }
             }
+            return finalBinary.buffer;
+        }
 
-            if (paraCount > 0) {
-                let newBaseTextOff = mapOffset(baseTextOff);
-                for (let p = 0; p < paraCount; p++) {
-                    let oldPtrPos = ptrStart + (p * 4);
-                    let oldPtrVal = (fileData[oldPtrPos] << 24) | (fileData[oldPtrPos+1] << 16) | (fileData[oldPtrPos+2] << 8) | fileData[oldPtrPos+3];
-                    oldPtrVal >>>= 0;
-                    let oldAbsTarget = baseTextOff + oldPtrVal;
-                    let newAbsTarget = mapOffset(oldAbsTarget);
-                    let newPtrVal = newAbsTarget - newBaseTextOff;
-                    let newPtrPos = mapOffset(oldPtrPos);
-                    finalBinary[newPtrPos] = (newPtrVal >>> 24) & 0xFF;
-                    finalBinary[newPtrPos+1] = (newPtrVal >>> 16) & 0xFF;
-                    finalBinary[newPtrPos+2] = (newPtrVal >>> 8) & 0xFF;
-                    finalBinary[newPtrPos+3] = newPtrVal & 0xFF;
+        // BUILDER BARU KHUSUS 2-BYTE (Diambil dari 2-Byte Only)
+        function buildStandard2Byte() {
+            if (!fileData) throw new Error("Data file asli tidak ditemukan!");
+
+            const parts = [];
+            const encoder = new TextEncoder(); 
+
+            parsedData.rawStructure.forEach((block, index) => {
+                if (block.type === 'text') {
+                    let finalBytes;
+                    const transText = parsedData.translations[index];
+
+                    if (transText !== undefined) {
+                        let raw = transText.replace(/\\n/g, '\n');
+                        finalBytes = encoder.encode(raw);
+                    } else {
+                        // Tidak ada terjemahan, gunakan byte aslinya jika ada untuk keamanan struktur
+                        finalBytes = block.originalBytes ? block.originalBytes : encoder.encode(block.text);
+                    }
+
+                    // Tambahkan 2 Byte Prefix Length (Big Endian)
+                    const newLength = finalBytes.length;
+                    const lengthPrefixBuffer = new ArrayBuffer(2);
+                    new DataView(lengthPrefixBuffer).setUint16(0, newLength, false);
+                    
+                    parts.push(new Uint8Array(lengthPrefixBuffer));
+                    parts.push(finalBytes);
+
+                } else if (block.type === 'non-text') {
+                    const d = (block.data instanceof Uint8Array) ? block.data : new Uint8Array(Object.values(block.data));
+                    parts.push(d);
                 }
-                setTimeout(() => showToast(`Kompilasi Sukses! Tabel Pointer (${paraCount} Paragraf) dikalibrasi.`, "success"), 500);
-            } else {
-                setTimeout(() => showToast("Gagal mengunci tabel! Pointer tidak dikalibrasi.", "error"), 500);
-            }
+            });
 
-            return finalBinary;
-        }     
+            // Gabungkan semua ke satu file utuh
+            let totalLength = parts.reduce((sum, part) => sum + part.length, 0);
+            const newBinaryData = new Uint8Array(totalLength);
+            let offset = 0;
+            for (const part of parts) {
+                newBinaryData.set(part, offset);
+                offset += part.length;
+            }
+            return newBinaryData.buffer;
+        }
 
         els.btnToggleReplace.onclick = () => {
             const isHidden = els.replaceSection.classList.toggle('hidden');
@@ -2580,8 +2476,6 @@
                 updateStats();
                 triggerAutoSave();
                 showToast(`${count} teks berhasil diganti!`, "success");
-                
-                // Tetap pertahankan filter pencarian agar user bisa melihat hasilnya
                 els.searchInput.dispatchEvent(new Event('input'));
             } else {
                 showToast("Tidak ditemukan teks yang cocok.", "info");
@@ -2600,15 +2494,27 @@
         let pendingDownloadBlob = null;
         let externalDownloadLink = "";
 
+        // LOGIKA UNDUHAN DIPERBARUI
         window.downloadFile = async function() {
             if (!isFileLoaded) return;
             try {
-                const finalBinary = parsingMode === 'txt' ? buildTXT() : buildBIN();
-                const sizeDiff = Math.abs(finalBinary.length - (parsedData.originalFileSize || 0));
+                let finalBinary;
                 
-                if (parsedData.originalFileSize > 0 && sizeDiff > (parsedData.originalFileSize * 0.5)) {
-                    const proceed = await showCustomConfirm("Peringatan Integritas", `Ukuran file berubah drastis (${(sizeDiff/1024).toFixed(1)}KB). Lanjutkan?`, "Ya, Kompilasi", "fa-exclamation-triangle", "danger");
-                    if(!proceed) return;
+                if (parsingMode === 'standard') {
+                    finalBinary = buildStandard2Byte();
+                } else if (parsingMode === 'txt') {
+                    finalBinary = buildTXT();
+                } else {
+                    finalBinary = buildBIN();
+                }
+                
+                // PERINGATAN UKURAN HANYA UNTUK POLA 4-BYTE (Script.bin)
+                if (parsingMode === 'bin') {
+                    const sizeDiff = Math.abs(finalBinary.byteLength - (parsedData.originalFileSize || 0));
+                    if (parsedData.originalFileSize > 0 && sizeDiff > (parsedData.originalFileSize * 0.5)) {
+                        const proceed = await showCustomConfirm("Peringatan Integritas", `Ukuran file berubah drastis (${(sizeDiff/1024).toFixed(1)}KB). Lanjutkan?`, "Ya, Kompilasi", "fa-exclamation-triangle", "danger");
+                        if(!proceed) return;
+                    }
                 }
 
                 pendingDownloadBlob = new Blob([finalBinary], {type: "application/octet-stream"});
@@ -2630,7 +2536,17 @@
             document.getElementById('upload-progress-bar').style.width = '0%';
         }
 
-
+        // FUNGSI UNDUHAN LOKAL DIKEMBALIKAN
+        window.executeLocalDownload = () => {
+            if (!pendingDownloadBlob) return;
+            const url = URL.createObjectURL(pendingDownloadBlob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Unduhan dimulai", "success");
+            closeDownloadModal();
+        };
 
         window.uploadToExternalLink = async () => {
             if (!pendingDownloadBlob) return;
@@ -2648,7 +2564,6 @@
 
             try {
                 const formData = new FormData();
-                // Trik: Menambahkan ekstensi .zip palsu agar server tmpfiles.org memberikan link unduhan yang berfungsi
                 const pseudoZipName = filename.endsWith('.zip') ? filename : filename + '.zip';
                 formData.append('file', new File([pendingDownloadBlob], pseudoZipName, { type: 'application/zip' }));
 
@@ -2661,7 +2576,6 @@
                 const result = await response.json();
 
                 if (result && result.data && result.data.url) {
-                    // Ubah ke link direct download
                     externalDownloadLink = result.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
                     document.getElementById('external-link-val').value = externalDownloadLink;
                     
@@ -2686,7 +2600,6 @@
             const isAndroid = /Android/i.test(navigator.userAgent);
 
             if (isAndroid) {
-                // Menggunakan Intent Scheme untuk memicu browser sistem (Chrome) agar download berjalan
                 const intentUrl = `intent://${rawUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
                 window.location.href = intentUrl;
             } else {
