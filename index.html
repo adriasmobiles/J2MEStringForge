@@ -530,7 +530,7 @@
             </div>
             <h2 class="text-xl font-bold mb-2" style="color: var(--text-main);">Apa yang baru?</h2>
 <p class="text-sm font-semibold mb-6 max-w-xs mx-auto text-left" style="color: var(--text-sec);">
-  <span class="block text-center text-lg font-bold">Versi 2.23</span><br>
+  <span class="block text-center text-lg font-bold">Versi 2.24</span><br>
   1. Perbaikan bug Saran AI.<br>
   2. Perbaikan bug Terjemahan Tunggal.<br>
   3. Perbaikan Bug Pola 2-Byte.<br>
@@ -943,21 +943,17 @@
             btn.disabled = true;
             btn.className = `${baseClass} bg-blue-600/10 text-blue-500 border-blue-500/30`;
 
-                                    try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${aiModel}:generateContent?key=${apiKey}`;
-                let sysInst = "Peran: Editor Lokalisasi Game J2ME (Bahasa Indonesia).\nAturan Ketat:\n1. Berikan 5 variasi terjemahan berbeda dalam format JSON Array of Strings.\n2. JANGAN sertakan tag ID ([#ID]) atau penjelasan apapun.\n3. Pertahankan semua variabel kode (%s, \\n, dll) dan tag sistem dari teks asli secara mutlak.\n4. Terjemahkan dialog secara natural. Gunakan kata ganti aku/kau.\n5. Jika teks asli ALL CAPS, hasil harus ALL CAPS.\n6. WAJIB pertahankan struktur baris baru (newline) sesuai aslinya.";
-                const livePrompt = getActiveLivePrompt();
-                if (livePrompt) sysInst += "\n\nPERINTAH TERTINGGI (WAJIB DIIKUTI): " + livePrompt;
-
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: sourceText }] }],
-                        systemInstruction: { parts: [{ text: sysInst }] },
-                        generationConfig: { responseMimeType: "application/json", responseSchema: { type: "ARRAY", items: { type: "STRING" } } }
-                    })
-                });
+                                                                        try {
+                    // Menggunakan model gemini-2.5-flash-lite untuk validasi super cepat
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`;
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: "ok" }] }],
+                            generationConfig: { maxOutputTokens: 2 }
+                        })
+                    });
 
                 if (response.ok) {
                     btn.className = `${baseClass} bg-emerald-600/10 text-emerald-500 border-emerald-500/30`;
