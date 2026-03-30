@@ -2271,35 +2271,46 @@
         let keyboardResizeListenerAdded = false; // Flag untuk melacak status listener
 
                 function handleEditModalKeyboardResize() {
-            const editModalOverlay = document.getElementById('edit-modal-overlay');
-            const editModalContent = editModalOverlay?.querySelector('.modal-content');
+    const editModalOverlay = document.getElementById('edit-modal-overlay');
+    const editModalContent = editModalOverlay?.querySelector('.modal-content');
 
-            if (!editModalOverlay?.classList.contains('active') || !editModalContent) {
-                if (keyboardResizeListenerAdded) {
-                    window.visualViewport.removeEventListener('resize', handleEditModalKeyboardResize);
-                    keyboardResizeListenerAdded = false;
-                }
-                return;
-            }
-
-            const currentVVH = window.visualViewport.height;
-            const layoutH = window.innerHeight;
-            const isKeyboardUp = (layoutH - currentVVH) > 150;
-
-            if (isKeyboardUp) {
-                editModalOverlay.classList.add('keyboard-active');
-                editModalContent.style.setProperty('--keyboard-safe-height', `${currentVVH}px`);
-                const swipeHandle = document.getElementById('keyboardCloseHandle');
-                if (swipeHandle && !editModalOverlay.dataset.keyboardScrollHandled) {
-                    swipeHandle.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                    editModalOverlay.dataset.keyboardScrollHandled = 'true';
-                }
-            } else {
-                editModalOverlay.classList.remove('keyboard-active');
-                editModalContent.style.removeProperty('--keyboard-safe-height');
-                editModalOverlay.dataset.keyboardScrollHandled = '';
-            }
+    if (!editModalOverlay?.classList.contains('active') || !editModalContent) {
+        if (keyboardResizeListenerAdded) {
+            window.visualViewport.removeEventListener('resize', handleEditModalKeyboardResize);
+            keyboardResizeListenerAdded = false;
         }
+        return;
+    }
+
+    // Gunakan visualViewport jika didukung, jika tidak fallback ke innerHeight
+    const currentVVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    
+    // PERBAIKAN: Bandingkan tinggi saat ini dengan initialViewportHeight, BUKAN dengan innerHeight yang berubah-ubah
+    const isKeyboardUp = (initialViewportHeight - currentVVH) > 150;
+
+    if (isKeyboardUp) {
+        editModalOverlay.classList.add('keyboard-active');
+        
+        // Universal Fix: Paksa overlay memendek tepat di ruang atas keyboard.
+        // Karena CSS Anda menggunakan align-items: flex-end, modal akan menempel di batas bawah ini.
+        editModalOverlay.style.height = `${currentVVH}px`;
+        editModalContent.style.setProperty('--keyboard-safe-height', `${currentVVH}px`);
+        
+        const swipeHandle = document.getElementById('keyboardCloseHandle');
+        if (swipeHandle && !editModalOverlay.dataset.keyboardScrollHandled) {
+            swipeHandle.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            editModalOverlay.dataset.keyboardScrollHandled = 'true';
+        }
+    } else {
+        editModalOverlay.classList.remove('keyboard-active');
+        
+        // Reset ukuran ke keadaan normal (full screen) jika keyboard ditutup
+        editModalOverlay.style.height = '100%';
+        editModalContent.style.removeProperty('--keyboard-safe-height');
+        
+        editModalOverlay.dataset.keyboardScrollHandled = '';
+    }
+}
 
         function openEdit(listIndex, shouldFocus = false) {
             currentEditIndex = listIndex;
@@ -2315,6 +2326,7 @@
             
             updateEditCharCount();
             els.editModalOverlay.classList.add('active');
+			initialViewportHeight = window.innerHeight;
 
                         // --- Logika penanganan keyboard ---
             if (!keyboardResizeListenerAdded) {
