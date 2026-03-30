@@ -2313,35 +2313,41 @@
 }
 
         function openEdit(listIndex, shouldFocus = false) {
-            currentEditIndex = listIndex;
-            const item = parsedData.displayableTexts[listIndex];
-            const globalIndex = item.originalIndex;
-            const orig = item.text;
-            const trans = parsedData.translations[globalIndex] !== undefined ? parsedData.translations[globalIndex] : orig;
+    currentEditIndex = listIndex;
+    const item = parsedData.displayableTexts[listIndex];
+    const globalIndex = item.originalIndex;
+    const orig = item.text;
+    const trans = parsedData.translations[globalIndex] !== undefined ? parsedData.translations[globalIndex] : orig;
 
-            const totalCount = parsedData.displayableTexts.length;
-            document.getElementById('edit-id').innerText = `#${listIndex + 1} / ${totalCount}`;
-            document.getElementById('edit-orig').innerText = orig;
-            els.editInput.value = trans;
-            
-            updateEditCharCount();
-            els.editModalOverlay.classList.add('active');
-			initialViewportHeight = window.innerHeight;
+    const totalCount = parsedData.displayableTexts.length;
+    document.getElementById('edit-id').innerText = `#${listIndex + 1} / ${totalCount}`;
+    document.getElementById('edit-orig').innerText = orig;
+    els.editInput.value = trans;
+    
+    updateEditCharCount();
+    
+    // --- PERBAIKAN DI SINI ---
+    // Hanya simpan tinggi awal JIKA modal belum aktif (baru pertama kali dibuka).
+    // Ini mencegah nilai tertimpa oleh tinggi layar yang menyusut saat menekan Next/Prev.
+    if (!els.editModalOverlay.classList.contains('active')) {
+        initialViewportHeight = window.innerHeight;
+    }
+    
+    els.editModalOverlay.classList.add('active');
 
-                        // --- Logika penanganan keyboard ---
-            if (!keyboardResizeListenerAdded) {
-                window.visualViewport.addEventListener('resize', handleEditModalKeyboardResize);
-                keyboardResizeListenerAdded = true;
-            }
-            handleEditModalKeyboardResize();
+    // --- Logika penanganan keyboard ---
+    if (!keyboardResizeListenerAdded) {
+        window.visualViewport.addEventListener('resize', handleEditModalKeyboardResize);
+        keyboardResizeListenerAdded = true;
+    }
+    handleEditModalKeyboardResize();
 
-            if (shouldFocus) {
-                setTimeout(() => {
-                    els.editInput.focus();
-                    // Listener resize visualViewport akan menangani scrollIntoView jika keyboard terdeteksi
-                }, 100);
-            }
-        }
+    if (shouldFocus) {
+        setTimeout(() => {
+            els.editInput.focus();
+        }, 100);
+    }
+}
 
         els.editInput.addEventListener('input', updateEditCharCount);
         function updateEditCharCount() {
