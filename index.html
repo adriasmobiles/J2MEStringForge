@@ -664,7 +664,7 @@
         </button>
 
         <!-- Tombol Terjemahan Batch (Ikon Language + Badge Identik Lite) -->
-        <button onclick="processBatchTranslate()" id="fabBatch" class="fab mb-1" title="Terjemahkan Batch">
+        <button id="fabBatch" class="fab mb-1" title="Terjemahkan Batch">
             <i class="fas fa-language text-2xl text-emerald-500"></i>
             <span id="batch-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md hidden">0</span>
         </button>
@@ -2120,6 +2120,57 @@
 
         // Inisialisasi DB saat load
         initDB();
+
+        // --- FAB BATCH LONG PRESS TO CANCEL SELECTION ---
+        let fabPressTimer;
+        let fabWasLongPress = false;
+
+        els.fabBatch.addEventListener('mousedown', (e) => {
+            fabWasLongPress = false;
+            fabPressTimer = setTimeout(() => {
+                fabWasLongPress = true;
+                if (isSelectionMode) {
+                    disableSelectionMode();
+                    if (window.navigator && window.navigator.vibrate) navigator.vibrate(50);
+                    showToast("Mode Pilih Banyak dibatalkan", "info");
+                } else {
+                    showToast("Tekan lama ikon ini untuk membatalkan pilihan saat mode multi-pilih aktif", "info");
+                }
+            }, 500); // 500ms for long press
+        });
+
+        els.fabBatch.addEventListener('mouseup', () => {
+            clearTimeout(fabPressTimer);
+            if (!fabWasLongPress) {
+                // Short press, execute original function
+                window.processBatchTranslate(); // Ensure global call
+            }
+            fabWasLongPress = false;
+        });
+
+        // For mobile:
+        els.fabBatch.addEventListener('touchstart', (e) => {
+            fabWasLongPress = false;
+            fabPressTimer = setTimeout(() => {
+                fabWasLongPress = true;
+                if (isSelectionMode) {
+                    disableSelectionMode();
+                    if (window.navigator && window.navigator.vibrate) navigator.vibrate(50);
+                    showToast("Mode Pilih Banyak dibatalkan", "info");
+                } else {
+                    showToast("Tekan lama ikon ini untuk membatalkan pilihan saat mode multi-pilih aktif", "info");
+                }
+            }, 500);
+        }, { passive: true }); // Use passive to avoid blocking scroll if mistakenly interpreted as touch
+
+        els.fabBatch.addEventListener('touchend', () => {
+            clearTimeout(fabPressTimer);
+            if (!fabWasLongPress) {
+                // Short press, execute original function
+                window.processBatchTranslate(); // Ensure global call
+            }
+            fabWasLongPress = false;
+        });
 
         // --- STATS & RENDER ---
         function updateStats() {
