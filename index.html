@@ -140,6 +140,8 @@
                 .modal-overlay.keyboard-active {
             align-items: flex-end;
             padding-bottom: 0;
+            top: auto; 
+            bottom: 0; 
         }
 
         .modal-overlay.keyboard-active .modal-content {
@@ -2362,7 +2364,6 @@
         function escapeHtml(text) { return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
         // --- EDITING ---
-        let initialViewportHeight = 0; // Menyimpan tinggi viewport awal saat modal dibuka
         let keyboardResizeListenerAdded = false; // Flag untuk melacak status listener
 
                 function handleEditModalKeyboardResize() {
@@ -2628,6 +2629,25 @@
         // Mode 2: Tampilkan Bottom Sheet dengan 5 Variasi (Tekan Lama)
         async function triggerAiSuggestions() {
             if (!apiKey) return showToast("API Key kosong!", "error");
+
+            // Sembunyikan keyboard dan reset kondisi modal edit jika keyboard aktif
+            if (els.editInput === document.activeElement) {
+                els.editInput.blur();
+            }
+            const editModalOverlay = document.getElementById('edit-modal-overlay');
+            const editModalContent = editModalOverlay?.querySelector('.modal-content');
+            if (editModalOverlay) {
+                editModalOverlay.classList.remove('keyboard-active');
+                editModalOverlay.style.height = '100%'; // Reset tinggi ke default
+            }
+            if (editModalContent) {
+                editModalContent.style.removeProperty('--keyboard-safe-height');
+            }
+            // Hapus listener resize keyboard karena modal AI memiliki dinamika sendiri
+            if (keyboardResizeListenerAdded) {
+                window.visualViewport.removeEventListener('resize', handleEditModalKeyboardResize);
+                keyboardResizeListenerAdded = false;
+            }
             
             const sourceText = document.getElementById('edit-orig').innerText;
             const modal = document.getElementById('ai-modal');
@@ -3263,7 +3283,6 @@
                 zip.forEach(path => { if(path.split('/').pop() === filename) targetPath = path; });
                 if(!targetPath) throw new Error("File " + filename + " tidak ditemukan di dalam JAR!");
                 zip.file(targetPath, pendingDownloadBlob);
-                zip.remove("META-INF/"); 
                 msg.innerText = "Repacking JAR..."; prog.style.width = '50%';
                 const blob = await zip.generateAsync({type:"blob", compression: "DEFLATE"});
                 pendingDownloadBlob = blob; filename = jarFile.name;
