@@ -2436,6 +2436,7 @@
             if (nextIndex >= 0 && nextIndex < parsedData.displayableTexts.length) {
                 openEdit(nextIndex, isKbd);
             }
+        };
 
         function saveCurrentEdit(metaType = 'manual') {
             const val = sanitizeText(els.editInput.value);
