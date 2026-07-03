@@ -3208,6 +3208,7 @@ const resObj = JSON.parse(rawOutput);
         // --- NAVIGATION FAB ---
         els.fabContainer.querySelector('#btnNavUp').onclick = () => document.getElementById('main-scroll').scrollTo({top: 0, behavior: 'smooth'});
         els.fabContainer.querySelector('#btnNavDown').onclick = () => document.getElementById('main-scroll').scrollTo({top: document.getElementById('main-scroll').scrollHeight, behavior: 'smooth'});
+		
 
         // --- BUILDER & EXPORT (HEURISTIK INTEGRASI PENUH) ---
         function buildTXT() {
