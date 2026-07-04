@@ -1078,6 +1078,7 @@
             const key = document.getElementById('set-api-key').value.trim();
             const btn = document.getElementById('btn-validate-api');
             const ind = document.getElementById('api-status-indicator');
+            const aiModelSelect = document.getElementById('set-ai-model').value; // Baca model yang dipilih
             const baseClass = "w-full py-2 text-[9px] font-black rounded-lg border transition-all flex items-center justify-center gap-2 uppercase tracking-tighter";
             
             if (!key) {
@@ -1090,10 +1091,28 @@
             btn.disabled = true;
             btn.className = `${baseClass} bg-blue-600/10 text-blue-500 border-blue-500/30`;
 
-                                                                        try {
-                    // Menggunakan model gemini-2.5-flash-lite untuk validasi super cepat
+            try {
+                const isQwen = aiModelSelect.includes('qwen');
+                let response;
+
+                // Percabangan Endpoint Validasi
+                if (isQwen) {
+                    const url = 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions';
+                    response = await fetch(url, {
+                        method: "POST",
+                        headers: { 
+                            "Authorization": `Bearer ${key}`,
+                            "Content-Type": "application/json" 
+                        },
+                        body: JSON.stringify({
+                            model: aiModelSelect,
+                            messages: [{ role: "user", content: "ok" }],
+                            max_tokens: 2
+                        })
+                    });
+                } else {
                     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`;
-                    const response = await fetch(url, {
+                    response = await fetch(url, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -1101,6 +1120,7 @@
                             generationConfig: { maxOutputTokens: 2 }
                         })
                     });
+                }
 
                 if (response.ok) {
                     btn.className = `${baseClass} bg-emerald-600/10 text-emerald-500 border-emerald-500/30`;
